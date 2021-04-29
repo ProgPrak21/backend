@@ -1,6 +1,6 @@
 package dataInfoLogic.DataTypes;
 
-public class HelloWorld {
+public class Content {
 
     private String content;
 

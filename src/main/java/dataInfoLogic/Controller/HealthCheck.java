@@ -21,6 +21,8 @@ public class HealthCheck {
     @GetMapping(path = "/health")
     public ResponseEntity<?> HealthCheck(){
 
+
+
         return ResponseEntity.ok("ok");
     }
 }

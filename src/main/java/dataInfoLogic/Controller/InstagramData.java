@@ -1,22 +1,14 @@
 package dataInfoLogic.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import dataInfoLogic.DataTypes.PersonalData;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.w3c.dom.Text;
 
 import javax.swing.text.html.HTML;
-import java.io.File;
-import java.util.logging.XMLFormatter;
 
 @RestController
 public class InstagramData {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.swing.text.html.HTML;
 
 @RestController
-public class InstagramData {
+public class InstagramPersonalData {
     @CrossOrigin
     @PostMapping(path = "/Instagram/profile_information")
     public ResponseEntity<?> ProfileInformation(@RequestBody HTML profile) throws Exception {

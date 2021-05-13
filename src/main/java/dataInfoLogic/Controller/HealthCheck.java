@@ -4,10 +4,10 @@ import dataInfoLogic.DataTypes.Content;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 public class HealthCheck {
 
-    @CrossOrigin
     @PostMapping(path = "/helloworld")
     public ResponseEntity<?> HelloWorld(@RequestBody Content hw){
 
@@ -17,7 +17,6 @@ public class HealthCheck {
         return ResponseEntity.ok(content);
     }
 
-    @CrossOrigin
     @GetMapping(path = "/health")
     public ResponseEntity<?> HealthCheck(){
 

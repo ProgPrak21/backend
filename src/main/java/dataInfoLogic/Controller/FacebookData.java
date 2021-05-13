@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-
+@CrossOrigin
 @RestController
 public class FacebookData {
 
-    @CrossOrigin
     @PostMapping(path = "/facebook/profile_information")
     public ResponseEntity<?> ProfileInformation(@RequestBody JsonNode profile) throws JsonProcessingException {
 

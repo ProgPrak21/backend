@@ -9,14 +9,12 @@ public class Categorization {
 
     public String categorizeString(String input) throws IOException {
 
-        String output = new String();
-
-        String text = "Facebook (stylized as facebook) is an American online social media and social networking service based in Menlo Park, California, and a flagship service of the namesake company Facebook, Inc.";
+        String output;
 
             // Instantiate the Language client com.google.cloud.language.v1.LanguageServiceClient
             try (LanguageServiceClient language = LanguageServiceClient.create()) {
                 // set content to the text string
-                Document doc = Document.newBuilder().setContent(text).setType(Document.Type.PLAIN_TEXT).build();
+                Document doc = Document.newBuilder().setContent(input).setType(Document.Type.PLAIN_TEXT).build();
                 ClassifyTextRequest request = ClassifyTextRequest.newBuilder().setDocument(doc).build();
                 // detect categories in the given text
                 ClassifyTextResponse response = language.classifyText(request);
@@ -29,8 +27,8 @@ public class Categorization {
                 }
             }catch(Exception e){
                 System.out.println(e);
+                output = e.toString();
             }
-
 
         return output;
     }

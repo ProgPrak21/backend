@@ -1,23 +1,17 @@
 package dataInfoLogic;
 
-import com.google.api.client.util.Lists;
 import com.google.api.gax.paging.Page;
-import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-
 @SpringBootApplication
 public class Application{
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        System.out.println("Stuff");
         authImplicit();
 
         SpringApplication.run(Application.class, args);

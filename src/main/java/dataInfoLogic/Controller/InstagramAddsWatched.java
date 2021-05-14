@@ -18,12 +18,13 @@ import java.util.List;
 public class InstagramAddsWatched {
     @CrossOrigin
     @PostMapping(path = "/Instagram/adds_watched")
-    public ResponseEntity<?> ProfileInformation(@RequestBody HTML profile) throws Exception {
-
+    public ResponseEntity<?> ProfileInformation(@RequestBody String profile) throws Exception {
         PersonalData personalData = new PersonalData();
-        String htmlstring=profile.toString();
-        String htmlparts[]=htmlstring.split("\n");
+        String htmlparts[]=profile.split("</td>");
         List<ViewedAdd> list=search_viewed_adds(htmlparts);
+        for(int i=0;i<list.size();i++){
+            System.out.println(list.get(i).by + list.get(i).date);
+        }
 
 
         return ResponseEntity.ok(personalData);
@@ -34,10 +35,7 @@ public class InstagramAddsWatched {
         for(int i=0;i<parts.length;i++){
             if(parts[i].contains("Autor")){
                 i++;
-                while(!parts[i].contains("<div>")){
-                    i++;
-                }
-                String autor=delete_empties(parts[i+1]);
+                String autor=delete_empties(parts[i].split("div>")[1].split("<")[0]);
                 while(!parts[i].contains("Zeit")){
                     i++;
                 }

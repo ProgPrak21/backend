@@ -8,18 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.swing.text.html.HTML;
-
 @RestController
 public class InstagramPersonalData {
     @CrossOrigin
     @PostMapping(path = "/Instagram/profile_information")
-    public ResponseEntity<?> ProfileInformation(@RequestBody HTML profile) throws Exception {
-
+    public ResponseEntity<?> ProfileInformation(@RequestBody String profile) throws Exception {
         PersonalData personalData = new PersonalData();
-        String htmlstring=profile.toString();
-        String htmlparts[]=htmlstring.split("\n");
-        personalData.seteMail(get_data(htmlparts,"E-Mail-Adresse"));
+        System.out.println(profile);
+        String htmlparts[]=profile.split("\n");
+        personalData.seteMail(delete_backslashs(get_data(htmlparts,"E-Mail-Adresse")));
 
 
         return ResponseEntity.ok(personalData);
@@ -43,6 +40,18 @@ public class InstagramPersonalData {
             i++;
         }
         return string.substring(i);
+    }
+    public String delete_backslashs(String string){
+        String backslash="\\t";
+
+        String stringhelper[]=string.split(backslash);
+        for(int i=0;i<stringhelper.length;i++){
+            if(stringhelper[i].length()>2){
+                int length=stringhelper[i].length();
+                return stringhelper[i].substring(0,length-1);
+            }
+        }
+        return null;
     }
 
 }

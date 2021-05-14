@@ -53,15 +53,15 @@ public class FacebookData {
         return ResponseEntity.ok(personalData);
     }
 
+
     @PostMapping(path = "/facebook/advertisement")
     public ResponseEntity<?> ProfileInformation(@RequestBody CategoryInputString categoryInputString)  {
 
-
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String uriHubspotCompany = "https://datainfo.gwhy.de/categorization";
-            HttpEntity<CategoryInputString> requestHubspotProvider = new HttpEntity<>(categoryInputString);
-            ResponseEntity<CategoryList> response = restTemplate.exchange(uriHubspotCompany, HttpMethod.POST, requestHubspotProvider, CategoryList.class);
+            String uri = "https://datainfo.gwhy.de/categorization";
+            HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
+            ResponseEntity<CategoryList> response = restTemplate.exchange(uri, HttpMethod.POST, request, CategoryList.class);
 
             CategoryList categoryList = response.getBody();
             LinkedList<CategoryItem> categoryItems = categoryList.getCategories();

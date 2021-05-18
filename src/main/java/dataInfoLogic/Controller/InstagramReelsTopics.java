@@ -15,7 +15,7 @@ import java.util.List;
 public class InstagramReelsTopics {
     @CrossOrigin
     @PostMapping(path = "/Instagram/reels_topics")
-    public ResponseEntity<?> ProfileInformation(@RequestBody String profile) throws Exception {
+    public ResponseEntity<?> ProfileInformation(@RequestBody  String profile) throws Exception {
         PersonalData personalData = new PersonalData();
         String htmlparts[]=profile.split("</td>");
         List topic_list=(get_topics(htmlparts));

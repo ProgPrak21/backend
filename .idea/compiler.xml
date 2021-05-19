@@ -6,16 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="datainfoserver" />
         <module name="backend" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="backend" target="1.8" />
+      <module name="datainfoserver" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="backend" options="-parameters" />
+      <module name="datainfoserver" options="-parameters" />
     </option>
   </component>
 </project>

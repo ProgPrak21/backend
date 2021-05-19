@@ -1,6 +1,6 @@
 package dataInfoLogic.Controller;
 
-import dataInfoLogic.DataTypes.Content;
+import dataInfoLogic.DTO.Content;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

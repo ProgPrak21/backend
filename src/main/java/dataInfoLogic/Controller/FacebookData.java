@@ -3,20 +3,15 @@ package dataInfoLogic.Controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dataInfoLogic.DataTypes.CategoryInputString;
-import dataInfoLogic.DataTypes.CategoryItem;
-import dataInfoLogic.DataTypes.CategoryList;
-import dataInfoLogic.DataTypes.PersonalData;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.databind.ObjectReader;
+import dataInfoLogic.DTO.FrontendDTO.UserCredentials;
+import dataInfoLogic.DTO.PersonalData;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -48,38 +43,41 @@ public class FacebookData {
         LinkedList<String> eMailList = new LinkedList<>(Arrays.asList(eMails.split(",")));
         personalData.seteMail(eMailList.get(0));
 
-        //todo retrieve phone number
-
         return ResponseEntity.ok(personalData);
     }
 
 
     @PostMapping(path = "/facebook/advertisement")
-    public ResponseEntity<?> ProfileInformation(@RequestBody CategoryInputString categoryInputString)  {
+    public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
+                                    @RequestParam(value = "uid", required = false) String uid,
+                                    @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-            String uri = "https://datainfo.gwhy.de/categorization";
-            HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
-            ResponseEntity<CategoryList> response = restTemplate.exchange(uri, HttpMethod.POST, request, CategoryList.class);
+        modelMap.addAttribute("facebook", file);
 
-            CategoryList categoryList = response.getBody();
-            LinkedList<CategoryItem> categoryItems = categoryList.getCategories();
+        JsonNode content = null;
 
-            for(int i=0; i<categoryItems.size(); i++){
+        //retrieve json content
+        if (!file.isEmpty()) {
 
-                CategoryItem categoryItem = categoryItems.get(i);
+            ObjectMapper objectMapper = new ObjectMapper();
+            final ObjectReader objectReader = objectMapper.reader();
 
-                System.out.println("Category Name: "+categoryItem.getName()+" Category confidence: "+categoryItem.getConfidence());
-            }
-
-            return ResponseEntity.ok(categoryItems);
-
-        }catch (Exception exception){
-            System.out.println(exception);
-
-            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+            content = objectReader.readTree(file.getBytes());
         }
+
+        System.out.println(content);
+
+        UserCredentials userCredentials = new UserCredentials();
+        if(uid != null && secret != null){
+            userCredentials.setUid(uid);
+            userCredentials.setSecret(secret);
+        }
+        else{
+            userCredentials.setUid("New");
+            userCredentials.setSecret("credentials");
+        }
+
+        return ResponseEntity.ok(userCredentials);
     }
 
 }

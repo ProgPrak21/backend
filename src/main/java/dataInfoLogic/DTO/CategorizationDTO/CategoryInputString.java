@@ -1,4 +1,4 @@
-package dataInfoLogic.DataTypes;
+package dataInfoLogic.DTO.CategorizationDTO;
 
 public class CategoryInputString {
 

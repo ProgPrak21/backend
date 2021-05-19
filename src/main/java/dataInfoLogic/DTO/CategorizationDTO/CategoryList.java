@@ -1,4 +1,6 @@
-package dataInfoLogic.DataTypes;
+package dataInfoLogic.DTO.CategorizationDTO;
+
+import dataInfoLogic.DTO.CategorizationDTO.CategoryItem;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package dataInfoLogic.DataTypes;
+package dataInfoLogic.DTO;
 
 public class Content {
 

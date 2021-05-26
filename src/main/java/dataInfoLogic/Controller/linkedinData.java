@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
-
+/*
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.springframework.ui.ModelMap;
@@ -31,5 +31,5 @@ public class linkedinData {
         }
     }
 }
-
+*/
 

@@ -1,5 +1,6 @@
 package dataInfoLogic.Controller;
 
+import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ public class UserDataDBController {
 
     @GetMapping(path="/data/all")
     public ResponseEntity<?> GetAllUserAddData(){
-
         return new ResponseEntity<>(userDataRepository.findAll(), HttpStatus.OK);
     }
 
@@ -37,12 +37,21 @@ public class UserDataDBController {
 
         try {
             userDataRepository.save(userData);
-
             return new ResponseEntity<>(userData, HttpStatus.CREATED);
         }catch(Exception exception){
 
             return new ResponseEntity<>("Storage error", HttpStatus.INSUFFICIENT_STORAGE);
         }
     }
+    @PostMapping(path="/data/deleteAll")
+    public ResponseEntity<?> ClearData() {
+        userDataRepository.deleteAll();
+        return  ResponseEntity.ok("cleared table");
+    }
 
+    @PostMapping(path="/data/clearUserData")
+    public ResponseEntity<?> ClearUserData(UserCredentials credentials) {
+        userDataRepository.deleteById(Long.parseLong(credentials.getUid()));
+        return  ResponseEntity.ok("cleared table");
+    }
 }

@@ -1,6 +1,6 @@
 package dataInfoLogic.DataTypes.CategorizationDTO;
 
-public class CategorizationInputString {
+public class CategoryInputString {
 
     private String categoryInput;
 

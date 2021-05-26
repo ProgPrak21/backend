@@ -1,26 +1,21 @@
 package dataInfoLogic.Controller;
 
-import dataInfoLogic.DataTypes.Content;
+import dataInfoLogic.Entities.UserData;
+import dataInfoLogic.Repositories.UserDataRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 public class HealthCheck {
 
-    @CrossOrigin
-    @PostMapping(path = "/helloworld")
-    public ResponseEntity<?> HelloWorld(@RequestBody Content hw){
 
-        Content content = new Content();
-        content.setContent(hw.getContent() + " works");
-
-        return ResponseEntity.ok(content);
-    }
-
-    @CrossOrigin
-    @GetMapping(path = "/health")
+    @GetMapping(path = "/data/health")
     public ResponseEntity<?> HealthCheck(){
 
         return ResponseEntity.ok("ok");
     }
+
 }

@@ -4,6 +4,7 @@ import dataInfoLogic.DataTypes.CategorizationDTO.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dataInfoLogic.DataTypes.DelUserCompany;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.Entities.UserData;
@@ -26,7 +27,12 @@ import java.util.LinkedList;
 @CrossOrigin
 @RestController
 
+
 public class SendMeText {
+
+    @Autowired
+    UserDataRepository userDataRepository;
+
     @PostMapping(path = "data/text")
     public ResponseEntity<?> ProfileInformation(@RequestBody String string) {
         //Gets Text, for example: Google Facebook
@@ -61,5 +67,10 @@ public class SendMeText {
         }
 
         return null;
+    }
+    @PostMapping(path ="data/deluserid")
+    public ResponseEntity<?> delUserCompany (@RequestBody String string){
+        userDataRepository.clearUserData(string);
+        return ResponseEntity.ok("Entries for user : "+ string + " deleted!");
     }
 }

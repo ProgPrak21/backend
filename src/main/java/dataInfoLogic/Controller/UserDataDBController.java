@@ -1,5 +1,6 @@
 package dataInfoLogic.Controller;
 
+import dataInfoLogic.DataTypes.DelUserCompany;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
@@ -50,8 +51,8 @@ public class UserDataDBController {
     }
 
     @PostMapping(path="/data/clearUserData")
-    public ResponseEntity<?> ClearUserData(UserCredentials credentials) {
-        userDataRepository.deleteById(Long.parseLong(credentials.getUid()));
+    public ResponseEntity<?> ClearUserData(String userid) {
+        userDataRepository.clearUserData(userid);
         return  ResponseEntity.ok("cleared table");
     }
 }

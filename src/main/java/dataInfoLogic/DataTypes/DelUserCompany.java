@@ -1,14 +1,14 @@
 package dataInfoLogic.DataTypes;
 
 public class DelUserCompany {
-    Long userid;
+    String userid;
     String company;
 
-    public void setUserid(Long userid) {
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 
-    public Long getUserid() {
+    public String getUserid() {
         return userid;
     }
 

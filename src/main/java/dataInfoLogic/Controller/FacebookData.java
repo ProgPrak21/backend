@@ -20,7 +20,48 @@ import java.util.LinkedList;
 @RestController
 public class FacebookData {
 
-    @PostMapping(path = "/facebook/profile_information")
+
+    @PostMapping(path = "/data/facebook/advertisement")
+    public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
+                                    @RequestParam(value = "uid", required = false) String uid,
+                                    @RequestParam(value = "secret", required = false) String secret) throws IOException {
+
+        modelMap.addAttribute("facebook", file);
+
+        JsonNode content = null;
+
+        
+
+        //retrieve json content
+        if (!file.isEmpty()) {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            final ObjectReader objectReader = objectMapper.reader();
+
+            content = objectReader.readTree(file.getBytes());
+        }
+
+        System.out.println(content);
+
+
+
+
+
+        UserCredentials userCredentials = new UserCredentials();
+        if(uid != null && secret != null){
+            userCredentials.setUid(uid);
+            userCredentials.setSecret(secret);
+        }
+        else{
+            userCredentials.setUid("New");
+            userCredentials.setSecret("credentials");
+        }
+
+        return ResponseEntity.ok(userCredentials);
+    }
+
+
+    @PostMapping(path = "/data/facebook/profile_information")
     public ResponseEntity<?> ProfileInformation(@RequestBody JsonNode profile) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -46,39 +87,4 @@ public class FacebookData {
 
         return ResponseEntity.ok(personalData);
     }
-
-
-    @PostMapping(path = "/facebook/advertisement")
-    public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
-                                    @RequestParam(value = "uid", required = false) String uid,
-                                    @RequestParam(value = "secret", required = false) String secret) throws IOException {
-
-        modelMap.addAttribute("facebook", file);
-
-        JsonNode content = null;
-
-        //retrieve json content
-        if (!file.isEmpty()) {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            final ObjectReader objectReader = objectMapper.reader();
-
-            content = objectReader.readTree(file.getBytes());
-        }
-
-        System.out.println(content);
-
-        UserCredentials userCredentials = new UserCredentials();
-        if(uid != null && secret != null){
-            userCredentials.setUid(uid);
-            userCredentials.setSecret(secret);
-        }
-        else{
-            userCredentials.setUid("New");
-            userCredentials.setSecret("credentials");
-        }
-
-        return ResponseEntity.ok(userCredentials);
-    }
-
 }

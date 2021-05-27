@@ -34,9 +34,6 @@ public class DataManagementController {
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word
         //Returns them in a Category List (later probably not needed)
-
-        LinkedList<CategoryItem> categoryItems= new LinkedList<>();
-        CategoryList return_categoryList=new CategoryList();
         for (String word :sqlData.getStringlist()) {
             try {
                 String string=wordToString(word);
@@ -49,26 +46,21 @@ public class DataManagementController {
 
                 CategoryList categoryList = response.getBody();
                 for(CategoryItem item: categoryList.getCategories()){
-                    categoryItems.add(item);
+                    UserData data = new UserData();
+                    data.setTopic(item.getName());
+                    data.setCompany(sqlData.getCompany());
+                    data.setUserId(sqlData.getCredentials().getUid());
+                    data.setWeight(1.0/categoryList.getCategories().size());
+                    //....
+                    userDataRepository.save(data);
                 }
+
 
             } catch (Exception exception) {
                 System.out.println(exception);
             }
         }
-        return_categoryList.setCategories(categoryItems);
 
-        for(CategoryItem item:return_categoryList.getCategories()){
-            UserData data = new UserData();
-            data.setTopic(item.getName());
-            data.setCompany(sqlData.getCompany());
-            data.setUserId(sqlData.getCredentials().getUid());
-            data.setWeight(1.0);
-            //....
-            userDataRepository.save(data);
-
-            System.out.println(item.getName());
-        }
         return ResponseEntity.ok("Inserted data successfully");
     }
     public String wordToString(String word){

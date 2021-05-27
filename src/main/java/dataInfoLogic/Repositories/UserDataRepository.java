@@ -12,10 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public interface UserDataRepository extends CrudRepository<UserData, Long> {
-    /*@Query(value = "select slotId from slot where providerId = ?1")
-    Long[] findSlotByProviderId(Long providerId);
-
-     */
 
     @Modifying
     @Transactional
@@ -29,11 +25,4 @@ public interface UserDataRepository extends CrudRepository<UserData, Long> {
 
     @Query(value="SELECT * FROM add_data WHERE user_id like ?1 ",nativeQuery = true)
     List<UserData> getUserTopics(String userid);
-
-    /*
-    @Modifying
-    @Query(value= "DELETE FROM userdata WHERE userId= :userid")
-    void clearUserData(@Param("userid") Long userId);
-
-     */
 }

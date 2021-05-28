@@ -1,36 +1,24 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.DataManagement;
 
 import dataInfoLogic.DataTypes.CategorizationDTO.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-
-@CrossOrigin
-@RestController
 
 public class DataManagementController {
 
     @Autowired
     UserDataRepository userDataRepository;
 
-    @PostMapping(path = "/data/importsql")
-    public ResponseEntity<?> ProfileInformation(@RequestBody SQLData sqlData) {
+    //removed controller, this function can be called directly from others
+    public void ProfileInformation(SQLData sqlData) {
+
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word
         //Returns them in a Category List (later probably not needed)
@@ -60,9 +48,9 @@ public class DataManagementController {
                 System.out.println(exception);
             }
         }
-
-        return ResponseEntity.ok("Inserted data successfully");
     }
+
+
     public String wordToString(String word){
         String string="";
         for(int i=0;i<20;i++){

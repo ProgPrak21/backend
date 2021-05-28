@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.SocialNetworks;
 
 
 import dataInfoLogic.DataTypes.PersonalData;
@@ -12,10 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
-public class InstagramYourTopics {
+public class InstagramReelsTopics {
     @CrossOrigin
-    @PostMapping(path = "/Instagram/your_topics")
-    public ResponseEntity<?> ProfileInformation(@RequestBody String profile) throws Exception {
+    @PostMapping(path = "/Instagram/reels_topics")
+    public ResponseEntity<?> ProfileInformation(@RequestBody  String profile) throws Exception {
         PersonalData personalData = new PersonalData();
         String htmlparts[]=profile.split("</td>");
         List topic_list=(get_topics(htmlparts));

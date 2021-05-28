@@ -4,11 +4,11 @@ import dataInfoLogic.DataTypes.CategorizationDTO.*;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmountByCompany;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
-import dataInfoLogic.DataTypes.DelUserCompany;
+import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.Entities.UserData;
-import dataInfoLogic.Entities.UserDataList;
+import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -86,10 +86,10 @@ public class SendMeText {
     public ResponseEntity<?> delUserCompany(@RequestBody String string) {
         String strings[] = string.split(" ");
         try {
-            DelUserCompany delUserCompany = new DelUserCompany();
+            UserCompany delUserCompany = new UserCompany();
             delUserCompany.setUserid(strings[0]);
             delUserCompany.setCompany(strings[1]);
-            HttpEntity<DelUserCompany> request = new HttpEntity<>(delUserCompany);
+            HttpEntity<UserCompany> request = new HttpEntity<>(delUserCompany);
             RestTemplate restTemplate = new RestTemplate();
             String uri = "http://localhost:8080/data/delusercompany";
             ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);

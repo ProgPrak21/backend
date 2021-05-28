@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.SocialNetworks;
 
 import java.io.File;
 import java.io.FileReader;

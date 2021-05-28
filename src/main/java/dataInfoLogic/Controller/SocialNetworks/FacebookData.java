@@ -1,5 +1,5 @@
 
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.SocialNetworks;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,6 +29,7 @@ public class FacebookData {
         modelMap.addAttribute("facebook", file);
 
         JsonNode content = null;
+
 
         
 

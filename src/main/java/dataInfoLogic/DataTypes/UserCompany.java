@@ -1,6 +1,6 @@
 package dataInfoLogic.DataTypes;
 
-public class DelUserCompany {
+public class UserCompany {
     String userid;
     String company;
 

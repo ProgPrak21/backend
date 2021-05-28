@@ -1,5 +1,6 @@
-package dataInfoLogic.Entities;
+package dataInfoLogic.DataTypes;
 
+import dataInfoLogic.Entities.UserData;
 import org.apache.catalina.User;
 
 import java.util.List;

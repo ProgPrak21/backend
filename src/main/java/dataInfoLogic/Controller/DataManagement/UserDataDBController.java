@@ -1,10 +1,9 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.DataManagement;
 
 import dataInfoLogic.DataTypes.CategorizationDTO.CategoryInputString;
-import dataInfoLogic.DataTypes.DelUserCompany;
-import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
+import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.Entities.UserData;
-import dataInfoLogic.Entities.UserDataList;
+import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +22,11 @@ public class UserDataDBController {
     public ResponseEntity<?> GetAllUserAddData(){
         return new ResponseEntity<>(userDataRepository.findAll(), HttpStatus.OK);
     }
-    @PostMapping(path="/data/getusertopics")
-    public  ResponseEntity<?> GetAllUserTopics(@RequestBody CategoryInputString userid){
+
+    @GetMapping(path="/data/usertopics")
+    public  ResponseEntity<?> GetAllUserTopics(@RequestParam("userId")String userId){
         UserDataList userDataList=new UserDataList();
-        userDataList.setUserData(userDataRepository.getUserTopics(userid.getCategoryInput()));
+        userDataList.setUserData(userDataRepository.getUserTopics(userId));
         return new ResponseEntity<>(userDataList,HttpStatus.OK);
     }
 
@@ -49,20 +49,28 @@ public class UserDataDBController {
             return new ResponseEntity<>("Storage error", HttpStatus.INSUFFICIENT_STORAGE);
         }
     }
-    @PostMapping(path="/data/deleteAll")
+
+    /* Not needed
+    @DeleteMapping(path="/data/deleteAll")
     public ResponseEntity<?> ClearData() {
         userDataRepository.deleteAll();
         return  ResponseEntity.ok("Table cleared!");
     }
 
-    @PostMapping(path="/data/clearuserdata")
-    public ResponseEntity<?> ClearUserData(@RequestBody CategoryInputString categoryInputString) {
-        userDataRepository.clearUserData(categoryInputString.getCategoryInput());
-        return  ResponseEntity.ok("Entries for user : "+ categoryInputString.getCategoryInput() + " deleted!");
+     */
+
+
+    @DeleteMapping(path="/data/userdata")
+    public ResponseEntity<?> ClearUserData(@RequestParam("userId") String userId) {
+        userDataRepository.clearUserData(userId);
+        return  ResponseEntity.ok("Entries for user : "+ userId + " deleted!");
     }
-    @PostMapping(path ="data/delusercompany")
-    public ResponseEntity<?> delUserCompany(@RequestBody DelUserCompany delUserCompany){
-        userDataRepository.clearUserCompany(delUserCompany.getUserid(),delUserCompany.getCompany());
-        return ResponseEntity.ok("Entries for user : " + delUserCompany.getUserid() + " for" + delUserCompany.getCompany() + " deleted!");
+
+
+
+    @DeleteMapping(path ="/data/usercompanydata")
+    public ResponseEntity<?> delUserCompany(@RequestParam("userId") String userId, @RequestParam("companyId") String companyId){
+        userDataRepository.clearUserCompany(userId,companyId);
+        return ResponseEntity.ok("Entries for user : " + userId + " for" + companyId + " deleted!");
     }
 }

@@ -5,16 +5,16 @@ import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import java.util.LinkedList;
 
 public class SQLData {
-    private LinkedList<String> stringlist;
+    private LinkedList<String> stringList;
     private UserCredentials credentials;
     private String company;
 
-    public LinkedList<String> getStringlist() {
-        return stringlist;
+    public LinkedList<String> getStringList() {
+        return stringList;
     }
 
-    public void setStringlist(LinkedList<String> stringlist) {
-        this.stringlist = stringlist;
+    public void setStringList(LinkedList<String> stringList) {
+        this.stringList = stringList;
     }
 
     public UserCredentials getCredentials() {

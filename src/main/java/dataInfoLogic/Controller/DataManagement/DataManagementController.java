@@ -1,3 +1,4 @@
+
 package dataInfoLogic.Controller.DataManagement;
 
 import dataInfoLogic.DataTypes.CategorizationDTO.*;
@@ -19,10 +20,12 @@ public class DataManagementController {
     //removed controller, this function can be called directly from others
     public void ProfileInformation(SQLData sqlData) {
 
+        System.out.println(sqlData.getStringList().get(0));
+
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word
         //Returns them in a Category List (later probably not needed)
-        for (String word :sqlData.getStringlist()) {
+        for (String word :sqlData.getStringList()) {
             try {
                 String string=wordToString(word);
                 CategoryInputString categoryInputString= new CategoryInputString();
@@ -32,7 +35,9 @@ public class DataManagementController {
                 HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
                 ResponseEntity<CategoryList> response = restTemplate.exchange(uri, HttpMethod.POST, request, CategoryList.class);
 
+
                 CategoryList categoryList = response.getBody();
+
                 for(CategoryItem item: categoryList.getCategories()){
                     UserData data = new UserData();
                     data.setTopic(item.getName());
@@ -42,7 +47,6 @@ public class DataManagementController {
                     //....
                     userDataRepository.save(data);
                 }
-
 
             } catch (Exception exception) {
                 System.out.println(exception);

@@ -51,7 +51,7 @@ public class SendMeText {
             userCredentials.setUid(list[1]);
             userCredentials.setSecret("Hallo");
             sqlData.setCredentials(userCredentials);
-            sqlData.setStringlist(stringlist);
+            sqlData.setStringList(stringlist);
 
             HttpEntity<SQLData> request = new HttpEntity<>(sqlData);
             ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);

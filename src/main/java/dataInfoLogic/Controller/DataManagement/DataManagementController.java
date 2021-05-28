@@ -20,7 +20,6 @@ public class DataManagementController {
     //removed controller, this function can be called directly from others
     public void ProfileInformation(SQLData sqlData) {
 
-        System.out.println(sqlData.getStringList().get(0));
 
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word

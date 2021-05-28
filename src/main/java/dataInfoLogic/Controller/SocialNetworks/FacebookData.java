@@ -1,6 +1,7 @@
 
 package dataInfoLogic.Controller.SocialNetworks;
 
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,13 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.LinkedList;
 
-
 @CrossOrigin
 @RestController
 public class FacebookData {
-
-    @Autowired
-    UserDataRepository userDataRepository;
 
     @PostMapping(path = "/data/facebook/advertisement")
     public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
@@ -60,13 +57,15 @@ public class FacebookData {
             sqlData.setCredentials(userCredentials);
 
             //final call
-
-            //seems not to work
+            //todo seems not to work
             DataManagementController dataManagementController = new DataManagementController();
             dataManagementController.ProfileInformation(sqlData);
 
 
         }
+
+
+
 
         UserCredentials userCredentials = new UserCredentials();
         if(uid != null && secret != null){

@@ -6,25 +6,27 @@ import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-
+@Component
 public class DataManagementController {
 
     @Autowired
-    UserDataRepository userDataRepository;
+    private UserDataRepository userDataRepository;
 
     //removed controller, this function can be called directly from others
     public void ProfileInformation(SQLData sqlData) {
-
 
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word
         //Returns them in a Category List (later probably not needed)
         for (String word :sqlData.getStringList()) {
+            System.out.println(word);
             try {
                 String string=wordToString(word);
                 CategoryInputString categoryInputString= new CategoryInputString();
@@ -36,15 +38,18 @@ public class DataManagementController {
 
 
                 CategoryList categoryList = response.getBody();
+                if(categoryList != null) {
+                    for (CategoryItem item : categoryList.getCategories()) {
+                        UserData data = new UserData();
 
-                for(CategoryItem item: categoryList.getCategories()){
-                    UserData data = new UserData();
-                    data.setTopic(item.getName());
-                    data.setCompany(sqlData.getCompany());
-                    data.setUserId(sqlData.getCredentials().getUid());
-                    data.setWeight(1.0/categoryList.getCategories().size());
-                    //....
-                    userDataRepository.save(data);
+                        data.setTopic(item.getName());
+                        data.setCompany(sqlData.getCompany());
+                        data.setUserId(sqlData.getCredentials().getUid());
+                        data.setWeight(1.0 / categoryList.getCategories().size());
+                        System.out.println(data.getTopic());
+                        //....
+                        userDataRepository.save(data);
+                    }
                 }
 
             } catch (Exception exception) {

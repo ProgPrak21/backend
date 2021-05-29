@@ -23,6 +23,9 @@ import java.util.LinkedList;
 @RestController
 public class FacebookData {
 
+    @Autowired
+    DataManagementController dataManagementController;
+
     @PostMapping(path = "/data/facebook/advertisement")
     public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
                                     @RequestParam(value = "uid", required = false) String uid,
@@ -58,7 +61,6 @@ public class FacebookData {
 
             //final call
             //todo seems not to work
-            DataManagementController dataManagementController = new DataManagementController();
             dataManagementController.ProfileInformation(sqlData);
 
 

@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 
 @CrossOrigin
@@ -106,8 +108,8 @@ public class SendMeText {
         try {
             HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
             RestTemplate restTemplate = new RestTemplate();
-            String uri = "http://localhost:8080/data/getusertopics";
-            ResponseEntity<UserDataList> response = restTemplate.exchange(uri, HttpMethod.POST, request, UserDataList.class);
+            String uri = "http://localhost:8080/data/usertopics?userId={userId}";
+            ResponseEntity<UserDataList> response = restTemplate.exchange(uri, HttpMethod.GET, request, UserDataList.class, string);
             UserDataList userDataList=response.getBody();
             LinkedList<TopicPercentage> topicsPercentages= analysetopicdistribution(userDataList);
             return ResponseEntity.ok(topicsPercentages);

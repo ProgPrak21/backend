@@ -50,14 +50,14 @@ public class UserDataDBController {
         }
     }
 
-    /* Not needed
+
     @DeleteMapping(path="/data/deleteAll")
     public ResponseEntity<?> ClearData() {
         userDataRepository.deleteAll();
         return  ResponseEntity.ok("Table cleared!");
     }
 
-     */
+
 
 
     @DeleteMapping(path="/data/userdata")

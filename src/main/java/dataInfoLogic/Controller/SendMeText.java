@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.function.Predicate;
 
 
 @CrossOrigin
@@ -181,5 +182,38 @@ public class SendMeText {
             }
         }
         return topicsPercentages;
+    }
+    @PostMapping(path = "data/getusertopicssummarized")
+    public ResponseEntity<?> getusertopicssummarized(@RequestBody String string) {
+        CategoryInputString categoryInputString = new CategoryInputString();
+        categoryInputString.setCategoryInput(string);
+        try {
+            HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
+            RestTemplate restTemplate = new RestTemplate();
+            String uri = "http://localhost:8080/data/usertopics?userId={userId}";
+            ResponseEntity<UserDataList> response = restTemplate.exchange(uri, HttpMethod.GET, request, UserDataList.class, string);
+            UserDataList userDataList=response.getBody();
+            LinkedList<TopicPercentage> topicsPercentages= analysetopicdistribution(userDataList);
+            LinkedList<TopicPercentage> topicsPercentageSummarized=new LinkedList<>();
+            int used;
+            for(TopicPercentage topicPercentage: topicsPercentages){
+                used=0;
+                for(TopicPercentage topicPercentageSumm: topicsPercentageSummarized){
+                    if(topicPercentageSumm.getTopic().equals(topicPercentage.getTopic().split("/")[1])){
+                        topicPercentageSumm.setPercentage(topicPercentageSumm.getPercentage()+topicPercentage.getPercentage());
+                        used=1;
+                        break;
+                    }
+                }
+                if(used!=1){
+                    topicPercentage.setTopic(topicPercentage.getTopic().split("/")[1]);
+                    topicsPercentageSummarized.add(topicPercentage);
+
+                }
+            }
+            return ResponseEntity.ok(topicsPercentageSummarized);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

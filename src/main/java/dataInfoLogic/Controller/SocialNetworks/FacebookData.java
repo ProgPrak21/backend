@@ -1,25 +1,30 @@
 
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.SocialNetworks;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dataInfoLogic.DataTypes.PersonalData;
+import dataInfoLogic.Controller.DataManagement.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
+import dataInfoLogic.DataTypes.SQLData;
+import dataInfoLogic.Repositories.UserDataRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 
 @CrossOrigin
 @RestController
 public class FacebookData {
 
+    @Autowired
+    DataManagementController dataManagementController;
 
     @PostMapping(path = "/data/facebook/advertisement")
     public ResponseEntity<?> submit(@RequestParam(value = "facebook") MultipartFile file, ModelMap modelMap,
@@ -30,19 +35,36 @@ public class FacebookData {
 
         JsonNode content = null;
 
-        
-
         //retrieve json content
         if (!file.isEmpty()) {
 
             ObjectMapper objectMapper = new ObjectMapper();
-            final ObjectReader objectReader = objectMapper.reader();
+            ObjectReader objectReader = objectMapper.reader();
 
             content = objectReader.readTree(file.getBytes());
+            content = content.at("/custom_audiences_v2");
+
+            objectReader = objectMapper.readerFor(new TypeReference<LinkedList<String>>() {});
+            LinkedList<String> stringList = objectReader.readValue(content);
+
+            //call to DataManagementController
+            //create request body
+            SQLData sqlData = new SQLData();
+            sqlData.setStringList(stringList);
+            sqlData.setCompany("facebook");
+
+            UserCredentials userCredentials = new UserCredentials();
+            userCredentials.setUid(uid);
+            userCredentials.setSecret(secret);
+
+            sqlData.setCredentials(userCredentials);
+
+            //final call
+            //todo seems not to work
+            dataManagementController.ProfileInformation(sqlData);
+
+
         }
-
-        System.out.println(content);
-
 
 
 
@@ -61,6 +83,7 @@ public class FacebookData {
     }
 
 
+    /*
     @PostMapping(path = "/data/facebook/profile_information")
     public ResponseEntity<?> ProfileInformation(@RequestBody JsonNode profile) throws JsonProcessingException {
 
@@ -87,4 +110,6 @@ public class FacebookData {
 
         return ResponseEntity.ok(personalData);
     }
+
+     */
 }

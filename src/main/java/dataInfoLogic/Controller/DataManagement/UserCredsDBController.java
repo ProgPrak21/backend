@@ -106,7 +106,12 @@ public class UserCredsDBController {
         userCredsRepository.clearUserData(userCredsString[0]);
         UserCreds userCreds= new UserCreds();
         userCreds.setUid(userCredsString[0]);
-        userCreds.setSecret(userCredsString[1]);
+        Encryptor encryptor= new Encryptor();
+        try {
+            userCreds.setSecret(encryptor.generateStorngPasswordHash(userCredsString[1]));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         userCredsRepository.save(userCreds);
 
         return ResponseEntity.ok("Password changed for user: " + userCredsString[0]);

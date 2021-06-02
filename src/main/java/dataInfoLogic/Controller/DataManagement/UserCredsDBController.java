@@ -7,6 +7,7 @@ import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserCredsRepository;
+import dataInfoLogic.Controller.DataManagement.Encryptor;
 import dataInfoLogic.Repositories.UserDataRepository;
 import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.catalina.User;
@@ -52,13 +53,19 @@ public class UserCredsDBController {
         if(userCredslist.isEmpty()) {
             UserCreds userCreds = new UserCreds();
             userCreds.setUid(userCredsString[0]);
-            userCreds.setSecret(userCredsString[1]);
+            Encryptor encryptor= new Encryptor();
+            try {
+                userCreds.setSecret(encryptor.generateStorngPasswordHash(userCredsString[1]));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            //userCreds.setSecret(userCredsString[1]);
             try {
                 userCredsRepository.save(userCreds);
             }catch (Exception e){
                 return new ResponseEntity<>("Storage error", HttpStatus.INSUFFICIENT_STORAGE);
             }
-            return ResponseEntity.ok("New User: Uid : " + userCreds.getUid() + "Secret : " + userCreds.getSecret());
+            return ResponseEntity.ok("New User: Uid : " + userCreds.getUid() + "Secret : " + userCredsString[1]);
         }
         return ResponseEntity.ok("UserId already exists");
     }
@@ -74,9 +81,13 @@ public class UserCredsDBController {
         String returnstring="Incorrect password!";
 
         LinkedList<UserCreds> userCredslist= userCredsRepository.getUserCreds(userCreds.split(" ")[0]);
-
-        if(userCredslist.get(0).getSecret().equals(userCreds.split(" ")[1])) {
-            returnstring=("Correct password!");
+        Encryptor encryptor=new Encryptor();
+        try {
+            if(encryptor.validatePassword(userCreds.split(" ")[1],userCredslist.get(0).getSecret() )){
+                returnstring=("Correct password!");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return new ResponseEntity<>(returnstring,HttpStatus.OK);
     }

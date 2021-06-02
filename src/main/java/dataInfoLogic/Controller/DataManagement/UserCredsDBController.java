@@ -29,25 +29,35 @@ public class UserCredsDBController {
     public ResponseEntity<?> GetAllUserAddData(){
         return new ResponseEntity<>(userCredsRepository.findAll(), HttpStatus.OK);
     }
+    @PostMapping(path="/usercreds/create")
+    public ResponseEntity<?> CreateData(){
 
-    /*
-    @GetMapping(path="/data/usertopics")
-    public  ResponseEntity<?> GetAllUserTopics(@RequestParam("userId")String userId){
-        UserDataList userDataList=new UserDataList();
-        userDataList.setUserData(userCredsRepository.getUserTopics(userId));
-        return new ResponseEntity<>(userDataList,HttpStatus.OK);
+        UserCreds userCreds = new UserCreds();
+        userCreds.setUid("Donut");
+        userCreds.setSecret("1234");
+
+        try {
+            userCredsRepository.save(userCreds);
+            return new ResponseEntity<>(userCreds, HttpStatus.CREATED);
+        }catch(Exception exception){
+
+            return new ResponseEntity<>("Storage error", HttpStatus.INSUFFICIENT_STORAGE);
+        }
     }
 
-     */
-
     @PostMapping(path="/usercreds/newentry")
-    public ResponseEntity<?> newcred(@RequestBody UserCredentials userCredentials){
-        LinkedList<UserCreds> userCredslist=userCredsRepository.getUserCreds(userCredentials.getUid());
+    public ResponseEntity<?> newcred(@RequestParam("userCreds")String userCredsparam){
+        String userCredsString[]= userCredsparam.split(" ");
+        LinkedList<UserCreds> userCredslist=userCredsRepository.getUserCreds(userCredsString[0]);
         if(userCredslist.isEmpty()) {
             UserCreds userCreds = new UserCreds();
-            userCreds.setUid(userCredentials.getUid());
-            userCreds.setSecret(userCredentials.getSecret());
-            userCredsRepository.save(userCreds);
+            userCreds.setUid(userCredsString[0]);
+            userCreds.setSecret(userCredsString[1]);
+            try {
+                userCredsRepository.save(userCreds);
+            }catch (Exception e){
+                return new ResponseEntity<>("Storage error", HttpStatus.INSUFFICIENT_STORAGE);
+            }
             return ResponseEntity.ok("New User: Uid : " + userCreds.getUid() + "Secret : " + userCreds.getSecret());
         }
         return ResponseEntity.ok("UserId already exists");
@@ -73,20 +83,21 @@ public class UserCredsDBController {
 
 
 
-    @DeleteMapping(path="/usercreds/userdata")
-    public ResponseEntity<?> ClearUserData(@RequestParam("userId") String userId) {
+    @DeleteMapping(path="/usercreds/delusercreds")
+    public ResponseEntity<?> delUserCreds(@RequestParam("userId") String userId) {
         userCredsRepository.clearUserData(userId);
         return  ResponseEntity.ok("Entry for user : "+ userId + " deleted!");
     }
-    /*
+    @PostMapping(path="/usercreds/changepassword")
+    public ResponseEntity<?> Changepassword(@RequestParam("userCreds") String userCredsParam){
+        String userCredsString[]=userCredsParam.split(" ");
 
+        userCredsRepository.clearUserData(userCredsString[0]);
+        UserCreds userCreds= new UserCreds();
+        userCreds.setUid(userCredsString[0]);
+        userCreds.setSecret(userCredsString[1]);
+        userCredsRepository.save(userCreds);
 
-
-    @DeleteMapping(path ="/data/usercompanydata")
-    public ResponseEntity<?> delUserCompany(@RequestParam("userId") String userId, @RequestParam("companyId") String companyId){
-        userDataRepository.clearUserCompany(userId,companyId);
-        return ResponseEntity.ok("Entries for user : " + userId + " for" + companyId + " deleted!");
+        return ResponseEntity.ok("Password changed for user: " + userCredsString[0]);
     }
-
-     */
 }

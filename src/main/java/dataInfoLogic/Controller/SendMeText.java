@@ -7,6 +7,7 @@ import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
 import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
+import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserDataRepository;
@@ -216,4 +217,55 @@ public class SendMeText {
             return null;
         }
     }
+    @PostMapping(path = "usercreds/newuser")
+    public ResponseEntity<?> newuser(@RequestBody String string) {
+        //Gets Text, for example: Google Facebook
+        //Puts the given words into a list
+        //Sends them to DataManagementController and receives Answer back
+        //Simulates other controllers sending Linkedlists of Strings to the DataManagementController
+
+        String list[] = string.split(" ");
+
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String uri = "http://localhost:8080/usercreds/newentry";
+            UserCredentials userCredentials= new UserCredentials();
+            userCredentials.setUid(list[0]);
+            userCredentials.setSecret(list[1]);
+            HttpEntity<UserCredentials> request = new HttpEntity<>(userCredentials);
+            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception exception) {
+            System.out.println(exception);
+        }
+
+        return null;
+    }
+    @PostMapping(path = "usercreds/checkpwtest")
+    public ResponseEntity<?> checkpw(@RequestBody String string) {
+        String splits[]=string.split(" ");
+        UserCredentials userCredentials= new UserCredentials();
+        userCredentials.setUid(splits[0]);
+        userCredentials.setSecret(splits[1]);
+        try {
+            HttpEntity<UserCredentials> request = new HttpEntity<>(userCredentials);
+            RestTemplate restTemplate = new RestTemplate();
+            String uri = "http://localhost:8080/usercreds/checkpw?userCreds={userCreds}";
+            ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, request, String.class, userCredentials.getUid() + " " + userCredentials.getSecret());
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    /*
+            HttpEntity<CategoryInputString> request = new HttpEntity<>(categoryInputString);
+            RestTemplate restTemplate = new RestTemplate();
+            String uri = "http://localhost:8080/data/usertopics?userId={userId}";
+            ResponseEntity<UserDataList> response = restTemplate.exchange(uri, HttpMethod.GET, request, UserDataList.class, string);
+            UserDataList userDataList=response.getBody();
+            LinkedList<TopicPercentage> topicsPercentages= analysetopicdistribution(userDataList);
+            return ResponseEntity.ok(topicsPercentages);
+     */
 }

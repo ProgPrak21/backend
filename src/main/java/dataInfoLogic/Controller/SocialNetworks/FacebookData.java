@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import dataInfoLogic.Controller.DataManagement.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
-import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -60,7 +59,6 @@ public class FacebookData {
             sqlData.setCredentials(userCredentials);
 
             //final call
-            //todo seems not to work
             dataManagementController.ProfileInformation(sqlData);
 
 

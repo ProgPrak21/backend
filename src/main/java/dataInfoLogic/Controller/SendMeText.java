@@ -7,7 +7,6 @@ import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
 import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
-import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserDataRepository;
@@ -18,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.function.Predicate;
 
 
 @CrossOrigin

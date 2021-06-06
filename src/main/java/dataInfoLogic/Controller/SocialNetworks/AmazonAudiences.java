@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.core.type.TypeReference;
 import dataInfoLogic.Controller.DataManagement.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;

@@ -3,7 +3,6 @@ package dataInfoLogic.Controller.SocialNetworks;
 
 import dataInfoLogic.Controller.DataManagement.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
-import dataInfoLogic.DataTypes.PersonalData;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

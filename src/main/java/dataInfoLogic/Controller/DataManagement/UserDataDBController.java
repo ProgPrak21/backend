@@ -1,7 +1,5 @@
 package dataInfoLogic.Controller.DataManagement;
 
-import dataInfoLogic.DataTypes.CategorizationDTO.CategoryInputString;
-import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserDataRepository;
@@ -27,7 +25,8 @@ public class UserDataDBController {
     public  ResponseEntity<?> GetAllUserTopics(@RequestParam("userId")String userId){
         UserDataList userDataList=new UserDataList();
         userDataList.setUserData(userDataRepository.getUserTopics(userId));
-        return new ResponseEntity<>(userDataList,HttpStatus.OK);
+
+        return new ResponseEntity<>(userDataList, HttpStatus.OK);
     }
 
 

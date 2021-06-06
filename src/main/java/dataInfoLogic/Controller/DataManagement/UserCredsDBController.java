@@ -1,16 +1,7 @@
 package dataInfoLogic.Controller.DataManagement;
 
-import dataInfoLogic.DataTypes.CategorizationDTO.CategoryInputString;
-import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
-import dataInfoLogic.DataTypes.UserCompany;
 import dataInfoLogic.Entities.UserCreds;
-import dataInfoLogic.Entities.UserData;
-import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Repositories.UserCredsRepository;
-import dataInfoLogic.Controller.DataManagement.Encryptor;
-import dataInfoLogic.Repositories.UserDataRepository;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

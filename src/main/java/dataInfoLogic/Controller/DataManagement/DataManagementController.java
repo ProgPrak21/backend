@@ -10,17 +10,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@EnableAsync
 public class DataManagementController {
 
     @Autowired
     private UserDataRepository userDataRepository;
 
-    //removed controller, this function can be called directly from others
-    public void ProfileInformation(SQLData sqlData) {
+    @Async
+    public void ProfileInformation(SQLData sqlData){
+        ProfileInformationWorker(sqlData);
+    }
+
+    public void ProfileInformationWorker(SQLData sqlData) {
 
         //Receives a Linkedlist of Strings
         //For each word it sends a message to https://datainfo.gwhy.de/categorization to get categories of the word

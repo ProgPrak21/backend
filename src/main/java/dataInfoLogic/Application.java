@@ -1,6 +1,5 @@
 package dataInfoLogic;
 
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

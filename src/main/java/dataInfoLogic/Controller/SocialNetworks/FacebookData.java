@@ -43,7 +43,16 @@ public class FacebookData {
             ObjectReader objectReader = objectMapper.reader();
 
             content = objectReader.readTree(file.getBytes());
-            content = content.at("/custom_audiences_v2");
+
+
+
+            //content = content.at("/custom_audiences");
+            if(!content.at("/custom_audiences").isEmpty()){
+                content = content.at("/custom_audiences");
+            }
+            else if(!content.at("/custom_audiences_v2").isEmpty()){
+                content = content.at("/custom_audiences_v2");
+            }
 
             objectReader = objectMapper.readerFor(new TypeReference<LinkedList<String>>() {});
             LinkedList<String> stringList = objectReader.readValue(content);

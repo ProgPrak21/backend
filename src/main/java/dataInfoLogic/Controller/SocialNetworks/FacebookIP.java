@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 @CrossOrigin
 @RestController
@@ -72,6 +73,11 @@ public class FacebookIP {
                 String uri = "http://ip-api.com/json/"+ip+"?fields=241";
                 HttpEntity<String> request = new HttpEntity<>(ip);
                 ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, request, String.class);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
                 if(response.getBody()!=null) {
                     String string = response.getBody().toString();
                     System.out.println(string);

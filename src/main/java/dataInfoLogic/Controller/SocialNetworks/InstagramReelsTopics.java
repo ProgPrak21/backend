@@ -1,7 +1,7 @@
 package dataInfoLogic.Controller.SocialNetworks;
 
 
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
+import dataInfoLogic.Controller.RESTController.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;

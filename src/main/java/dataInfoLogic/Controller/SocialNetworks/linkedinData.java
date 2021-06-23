@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
+import dataInfoLogic.Controller.RESTController.DataManagementController;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;

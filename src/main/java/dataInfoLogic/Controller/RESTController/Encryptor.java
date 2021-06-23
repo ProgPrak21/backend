@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller.DataManagement;
+package dataInfoLogic.Controller.RESTController;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

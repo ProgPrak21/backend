@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller.DataManagement;
+package dataInfoLogic.Controller.RESTController;
 
 import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Repositories.UserCredsRepository;

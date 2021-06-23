@@ -1,5 +1,7 @@
 package dataInfoLogic.Entities;
 
+import io.leangen.graphql.annotations.GraphQLQuery;
+
 import javax.persistence.*;
 
 @Entity(name = "add_data")
@@ -14,6 +16,12 @@ public class UserData {
     private String company;
     private String topic;
     private Double weight;
+
+    public UserData() {
+        this.userId = userId;
+        this.company = company;
+        this.topic = topic;
+    }
 
     public Long getId() {
         return id;

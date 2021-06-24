@@ -19,4 +19,15 @@ public class TopicAmount {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
+    public int compareTo(TopicAmount otherTopicAmount){
+        if(otherTopicAmount.getAmount()<this.getAmount()){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+    public int compareTo(Object o) {
+        return compareTo((TopicAmount) o);
+    }
 }

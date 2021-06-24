@@ -70,9 +70,10 @@ public class UserCredsDBController {
     @GetMapping(path="usercreds/checkpw")
     public ResponseEntity<?> checkpw(@RequestParam("userCreds")String userCreds){
         String returnstring="Incorrect password!";
-
+        if(userCreds.isEmpty())return new ResponseEntity<>("No Id inserted",HttpStatus.OK);
         LinkedList<UserCreds> userCredslist= userCredsRepository.getUserCreds(userCreds.split(" ")[0]);
         Encryptor encryptor=new Encryptor();
+        if(userCredslist.isEmpty())return new ResponseEntity<>(returnstring,HttpStatus.OK);
         try {
             if(encryptor.validatePassword(userCreds.split(" ")[1],userCredslist.get(0).getSecret() )){
                 returnstring=("Correct password!");

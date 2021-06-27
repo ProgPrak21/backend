@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Services;
 
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmountByCompany;
@@ -8,11 +8,15 @@ import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Repository
 public class FrontEndRequests {
+
     @Autowired
     UserDataRepository userDataRepository;
 

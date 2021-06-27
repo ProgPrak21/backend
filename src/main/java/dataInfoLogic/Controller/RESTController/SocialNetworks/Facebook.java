@@ -1,13 +1,13 @@
 
-package dataInfoLogic.Controller.SocialNetworks;
+package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import dataInfoLogic.Controller.DataManagement.CredentialsManager;
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
+import dataInfoLogic.Services.CredentialsManager;
+import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class Facebook {
 
     @Autowired
-    DataManagementController dataManagementController;
+    DataManagement dataManagement;
 
     @Autowired
     CredentialsManager credentialsManager;
@@ -106,7 +106,7 @@ public class Facebook {
                     sqlData.setStringList(stringList);
                     sqlData.setCompany("facebook");
                     sqlData.setCredentials(userCredentials);
-                    dataManagementController.ProfileInformation(sqlData);
+                    dataManagement.ProfileInformation(sqlData);
 
                 }
             }

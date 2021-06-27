@@ -1,11 +1,9 @@
-package dataInfoLogic.Controller.SocialNetworks;
+package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
-import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
+import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -21,17 +19,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
-public class GoogleMAMaps {
+public class InstagramReelsTopics {
     @Autowired
-    DataManagementController dataManagementController;
+    DataManagement dataManagement;
 
     @CrossOrigin
-    @PostMapping(path = "/google/MAMaps")
-    public ResponseEntity<?> submit(@RequestParam(value = "google") MultipartFile file, ModelMap modelMap,
+    @PostMapping(path = "/Instagram/reels_topics")
+    public ResponseEntity<?> submit(@RequestParam(value = "instagram") MultipartFile file, ModelMap modelMap,
                                     @RequestParam(value = "uid", required = false) String uid,
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
-        modelMap.addAttribute("google", file);
+        modelMap.addAttribute("instagram", file);
 
         if (!file.isEmpty()) {
             System.out.println(file.getContentType());
@@ -52,22 +50,22 @@ public class GoogleMAMaps {
             for(String string: result){
                 doc+=string;
             }
-            String htmlparts[]=doc.split("Route");
-            LinkedList<TopicAmount> topiclist=new LinkedList<>();
-            LinkedList<String> topic_list=(routes(htmlparts,topiclist));
+            String htmlparts[]=doc.split("</td>");
+            LinkedList<String> topic_list=(get_topics(htmlparts));
+
+            SQLData sqlData = new SQLData();
+            sqlData.setStringList(topic_list);
+            sqlData.setCompany("instagram");
 
             UserCredentials userCredentials = new UserCredentials();
             userCredentials.setUid(uid);
             userCredentials.setSecret(secret);
 
-            for(String string : topic_list){
-                System.out.println(string);
-            }
-            topiclist.sort(TopicAmount::compareTo);
-            for(TopicAmount topicAmount : topiclist){
-                System.out.println(topicAmount.getTopic() + " " + topicAmount.getAmount() + "x");
-            }
+            sqlData.setCredentials(userCredentials);
 
+            //final call
+            //todo seems not to work
+            dataManagement.ProfileInformation(sqlData);
 
         }
         UserCredentials userCredentials = new UserCredentials();
@@ -83,31 +81,14 @@ public class GoogleMAMaps {
         return ResponseEntity.ok(userCredentials);
     }
     //Searches in HTML-document for the given words
-    public LinkedList<String> routes(String[] htmlparts, LinkedList<TopicAmount> topiclist){
+    public LinkedList<String> get_topics(String[] htmlparts){
         LinkedList list=new LinkedList();
-        int used=0;
-        LinkedList<String> places= new LinkedList<>();
-        for(int i=1;i<htmlparts.length;i++){
-            String parts[]=htmlparts[i].split("<br>");
-            for(int k=1;k<3;k++) {
-                used=0;
-                String kaktus=parts[k];
-                String kaktusse[]=kaktus.split(",");
-                for(TopicAmount topicAmount : topiclist){
-                    if(topicAmount.getTopic().split(",")[0].equals(kaktusse[0])){
-                        topicAmount.setAmount(topicAmount.getAmount()+1);
-                        used=1;
-                    }
-                }
-                if(used==0){
-                    TopicAmount topicAmount=new TopicAmount();
-                    topicAmount.setTopic(kaktus);
-                    topicAmount.setAmount(1);
-                    topiclist.add(topicAmount);
-                }
+        for(int i=0;i<htmlparts.length;i++){
+            if(htmlparts[i].contains("Name")){
+                i++;
+                list.add(htmlparts[i].split("div>")[1].split("<")[0]);
             }
-            list.add(parts[1] + " to " + parts[2] + " on " + parts[3].split("MESZ")[0]);
-            }
+        }
         return list;
     }
 

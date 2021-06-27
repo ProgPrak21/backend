@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller.DataManagement;
+package dataInfoLogic.Services;
 
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import org.springframework.http.HttpEntity;
@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.Charset;
 import java.util.Random;
 
 @Component

@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedList;
 
+//controller just needed for testing purposes
+
 @CrossOrigin
 @RestController
 public class UserCredsDBController {
-
+    /*
     @Autowired
     UserCredsRepository userCredsRepository;
 
@@ -109,4 +111,6 @@ public class UserCredsDBController {
 
         return ResponseEntity.ok("Password changed for user: " + userCredsString[0]);
     }
+
+     */
 }

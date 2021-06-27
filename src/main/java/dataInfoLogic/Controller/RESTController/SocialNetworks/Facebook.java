@@ -56,7 +56,7 @@ public class Facebook {
             }
 
         } else {
-            userCredentials=credentialsManager.RandomUserCreds();
+            userCredentials=credentialsManager.randomUserCred();
         }
 
         //create helpers

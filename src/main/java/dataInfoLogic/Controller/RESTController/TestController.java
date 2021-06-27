@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.RESTController;
 
 import dataInfoLogic.DataTypes.CategorizationDTO.*;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
@@ -19,12 +19,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedList;
 
+//controller just needed for testing purposes
+
 
 @CrossOrigin
 @RestController
+public class TestController {
 
-
-public class SendMeText {
+    /*
 
     @Autowired
     UserDataRepository userDataRepository;
@@ -288,4 +290,6 @@ public class SendMeText {
 
         return null;
     }
+
+     */
 }

@@ -1,12 +1,11 @@
 
-package dataInfoLogic.Controller.DataManagement;
+package dataInfoLogic.Services;
 
 import dataInfoLogic.DataTypes.CategorizationDTO.*;
 import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @EnableAsync
-public class DataManagementController {
+public class DataManagement {
 
     @Autowired
     private UserDataRepository userDataRepository;

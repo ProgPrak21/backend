@@ -1,7 +1,7 @@
 
 package dataInfoLogic.Controller.GraphQLController;
 
-import dataInfoLogic.Controller.FrontEndRequests;
+import dataInfoLogic.Services.FrontEndRequests;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
 import dataInfoLogic.Entities.UserData;
 import dataInfoLogic.Repositories.UserDataRepository;
@@ -22,10 +22,11 @@ public class UserDataDBControllerGraphQL {
 
 
     private final UserDataRepository userDataRepository;
-    private final FrontEndRequests frontEndRequests=new FrontEndRequests();
+    private final FrontEndRequests frontEndRequests;
 
-    public UserDataDBControllerGraphQL(UserDataRepository userDataRepository) {
+    public UserDataDBControllerGraphQL(UserDataRepository userDataRepository, FrontEndRequests frontEndRequests) {
         this.userDataRepository = userDataRepository;
+        this.frontEndRequests = frontEndRequests;
     }
 
 
@@ -35,13 +36,19 @@ public class UserDataDBControllerGraphQL {
         return (List<UserData>) userDataRepository.findAll();
     }
 
+    //todo add secret validation
+
 
     @GraphQLQuery(name = "UserData")
     public List<UserData> getUserData(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
         return userDataRepository.getUserTopics(userId);
     }
+
+
     @GraphQLQuery(name = "UserDataAnalyzed")
     public LinkedList<TopicPercentage> getUserDataAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
         return frontEndRequests.getUserTopicsummarized(userId);
     }
+
+
 }

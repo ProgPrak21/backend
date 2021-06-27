@@ -1,7 +1,7 @@
-package dataInfoLogic.Controller.SocialNetworks;
+package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
+import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 @RestController
-public class InstagramReelsTopics {
+public class InstagramYourTopics {
     @Autowired
-    DataManagementController dataManagementController;
+    DataManagement dataManagement;
 
     @CrossOrigin
-    @PostMapping(path = "/Instagram/reels_topics")
+    @PostMapping(path = "/Instagram/your_topics")
     public ResponseEntity<?> submit(@RequestParam(value = "instagram") MultipartFile file, ModelMap modelMap,
                                     @RequestParam(value = "uid", required = false) String uid,
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
@@ -65,7 +65,7 @@ public class InstagramReelsTopics {
 
             //final call
             //todo seems not to work
-            dataManagementController.ProfileInformation(sqlData);
+            dataManagement.ProfileInformation(sqlData);
 
         }
         UserCredentials userCredentials = new UserCredentials();

@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller.SocialNetworks;
+package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,24 +8,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import dataInfoLogic.Controller.DataManagement.DataManagementController;
+import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @CrossOrigin
 @RestController
-public class linkedinData {
+public class AmazonAudiences {
 
     @Autowired
-    DataManagementController dataManagementController;
+    DataManagement dataManagement;
 
-    @PostMapping(path = "/data/linkedin/advertisement")
-    public ResponseEntity<?> submit(@RequestParam(value = "linkedin") MultipartFile file, ModelMap modelMap,
+    @PostMapping(path = "/data/amazon/advertisement")
+    public ResponseEntity<?> submit(@RequestParam(value = "amazonAudiences") MultipartFile file, ModelMap modelMap,
                                     @RequestParam(value = "uid", required = false) String uid,
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
-        modelMap.addAttribute("linkedin", file);
+        modelMap.addAttribute("amazonAudiences", file);
 
         if (!file.isEmpty()) {
             System.out.println(file.getContentType());
@@ -46,7 +46,7 @@ public class linkedinData {
                 for (String string: content) {
                     String array [] = string.split(";");
                     for (int i = 0; i<array.length; i++) {
-                        stringList.add(array[i]);
+                        stringList.add(topicCleanUp(array[i]));
                     }
                 }
                 System.out.println(stringList);
@@ -56,12 +56,11 @@ public class linkedinData {
                 System.err.println(e.getMessage());
             }
 
-
             //call to DataManagementController
             //create request body
             SQLData sqlData = new SQLData();
             sqlData.setStringList(stringList);
-            sqlData.setCompany("linkedin");
+            sqlData.setCompany("Amazon");
 
             UserCredentials userCredentials = new UserCredentials();
             userCredentials.setUid(uid);
@@ -69,9 +68,7 @@ public class linkedinData {
 
             sqlData.setCredentials(userCredentials);
 
-            //final call
-            //todo seems not to work
-            dataManagementController.ProfileInformation(sqlData);
+            dataManagement.ProfileInformation(sqlData);
 
         }
 
@@ -85,6 +82,21 @@ public class linkedinData {
         }
 
         return ResponseEntity.ok(userCredentials);
+    }
+
+    public String topicCleanUp(String topic){
+        String array [] = topic.split(":");
+        String result="";
+        //removes Prefixes such as "in_Market:" as they might alter what Category is returned
+        for(int i=1;i< array.length;i++){
+            result+=" "+array[i];
+        }
+        //removes last "
+        if(result.length()>0) {
+            result = result.substring(0, result.length() - 1);
+        }
+        System.out.println(result);
+        return result;
     }
 
 }

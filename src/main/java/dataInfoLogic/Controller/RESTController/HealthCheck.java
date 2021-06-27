@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller;
+package dataInfoLogic.Controller.RESTController;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

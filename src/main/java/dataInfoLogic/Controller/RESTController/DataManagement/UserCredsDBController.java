@@ -1,7 +1,8 @@
-package dataInfoLogic.Controller.DataManagement;
+package dataInfoLogic.Controller.RESTController.DataManagement;
 
 import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Repositories.UserCredsRepository;
+import dataInfoLogic.Services.Encryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

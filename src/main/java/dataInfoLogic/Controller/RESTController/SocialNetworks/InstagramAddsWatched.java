@@ -1,4 +1,4 @@
-package dataInfoLogic.Controller.SocialNetworks;
+package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
 import dataInfoLogic.DataTypes.PersonalData;

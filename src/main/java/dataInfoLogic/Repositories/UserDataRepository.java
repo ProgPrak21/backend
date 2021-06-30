@@ -23,7 +23,7 @@ public interface UserDataRepository extends CrudRepository<UserData, Long> {
     void clearUserCompany(String userId, String company);
 
 
-    @Query(value="SELECT ad FROM add_data ad WHERE ad.userId = ?1")
+    @Query(value="SELECT * FROM add_data WHERE user_id like ?1",nativeQuery = true)
     List<UserData> getUserTopics(String userid);
 
 }

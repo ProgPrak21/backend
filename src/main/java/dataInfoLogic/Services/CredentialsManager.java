@@ -38,6 +38,7 @@ public class CredentialsManager {
             Random random = new Random();
 
             int idLength=random.nextInt()%10+10;
+            idLength+=10;
             String generatedId = random.ints(leftLimit, rightLimit + 1)
                     .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                     .limit(idLength)
@@ -45,6 +46,7 @@ public class CredentialsManager {
                     .toString();
 
             int secretLength=random.nextInt()%10+10;
+            secretLength+=10;
             String generatedSecret = random.ints(leftLimit, rightLimit + 1)
                     .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
                     .limit(secretLength)

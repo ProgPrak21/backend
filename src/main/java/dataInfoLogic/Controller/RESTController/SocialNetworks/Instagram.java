@@ -91,13 +91,6 @@ public class Instagram {
 
                 //retrieve json content
                 if(Objects.equals(currentFile.getOriginalFilename(), "your_reels_topics.json")){
-
-                    JsonNode content = objectReader.readTree(currentFile.getBytes());
-
-                    //try different possibilities where to find content
-                    if(!content.at("/topics_your_reels_topics").isEmpty()){
-                        content = content.at("/topics_your_reels_topics");
-                    }
                     //read data from file
                     BufferedReader br;
                     List<String> result = new ArrayList<>();

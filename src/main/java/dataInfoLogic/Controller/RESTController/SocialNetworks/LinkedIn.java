@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @CrossOrigin
 @RestController
-public class linkedinData {
+public class LinkedIn {
 
     @Autowired
     DataManagement dataManagement;
@@ -84,7 +84,7 @@ public class linkedinData {
             if (!(currentFile == null) && !currentFile.isEmpty()) {
 
                 //retrieve json content
-                if(Objects.equals(currentFile.getOriginalFilename(), "advertisers_who_uploaded_a_contact_list_with_your_information.json")){
+                if(Objects.equals(currentFile.getOriginalFilename(), "Ad_Targeting.csv")){
 
                     BufferedReader br;
                     List<String> result = new ArrayList<>();

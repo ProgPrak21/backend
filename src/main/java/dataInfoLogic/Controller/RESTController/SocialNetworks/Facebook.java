@@ -40,8 +40,13 @@ public class Facebook {
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
 
-        if(file1 == null){
+
+        if(file1.getSize() == 0){
             new ResponseEntity<>("No file attached", HttpStatus.BAD_REQUEST);
+        }
+
+        if(file1.isEmpty()){
+            new ResponseEntity<>("File empty", HttpStatus.BAD_REQUEST);
         }
 
         //check if user credentials are provided or assign new ones

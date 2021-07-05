@@ -1,35 +1,29 @@
-
 package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import dataInfoLogic.Services.CredentialsManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.SQLData;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 @CrossOrigin
 @RestController
-public class Instagram {
+public class LinkedIn {
 
     @Autowired
     DataManagement dataManagement;
@@ -37,7 +31,7 @@ public class Instagram {
     @Autowired
     CredentialsManager credentialsManager;
 
-    @PostMapping(path = "/data/instagram/advertisement")
+    @PostMapping(path = "/data/linkedin/advertisement")
     public ResponseEntity<?> submit(@RequestParam(value = "file1", required = false) MultipartFile file1,
                                     @RequestParam(value = "file2", required = false) MultipartFile file2,
                                     @RequestParam(value = "file3", required = false) MultipartFile file3,
@@ -90,11 +84,12 @@ public class Instagram {
             if (!(currentFile == null) && !currentFile.isEmpty()) {
 
                 //retrieve json content
-                if(Objects.equals(currentFile.getOriginalFilename(), "your_reels_topics.json")){
-                    //read data from file
+                if(Objects.equals(currentFile.getOriginalFilename(), "Ad_Targeting.csv")){
+
                     BufferedReader br;
                     List<String> result = new ArrayList<>();
-                    String json="";
+                    LinkedList<String> stringList = new LinkedList<>();
+
                     try {
 
                         String line;
@@ -102,71 +97,30 @@ public class Instagram {
                         br = new BufferedReader(new InputStreamReader(is));
                         while ((line = br.readLine()) != null) {
                             result.add(line);
-                            json+=line;
                         }
+
+                        List <String> content = new ArrayList<>(result.subList(1, result.indexOf(result.get(result.size() - 1)) + 1));
+                        for (String string: content) {
+                            String array [] = string.split(";");
+                            for (int k = 0; k<array.length; k++) {
+                                stringList.add(array[k]);
+                            }
+                        }
+                        System.out.println(stringList);
+
+
                     } catch (IOException e) {
                         System.err.println(e.getMessage());
                     }
-                    LinkedList<String> stringList=new LinkedList<>();
-                    try {
-                        JSONObject object = new JSONObject(json);
-                        JSONArray array = object.getJSONArray("topics_your_reels_topics");
-                        for (int k = 0; k < array.length(); k++) {
-                            String topic = array.getJSONObject(k).getJSONObject("string_map_data").getJSONObject("Name").getString("value");
-                            stringList.add(topic);
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+
+
                     //call data management controller for categorization
                     SQLData sqlData = new SQLData();
                     sqlData.setStringList(stringList);
-                    sqlData.setCompany("instagram");
+                    sqlData.setCompany("linkedin");
                     sqlData.setCredentials(userCredentials);
                     dataManagement.ProfileInformation(sqlData);
 
-
-
-                }else if(Objects.equals(currentFile.getOriginalFilename(), "your_topics.json")){
-                    JsonNode content = objectReader.readTree(currentFile.getBytes());
-
-                    //try different possibilities where to find content
-                    if(!content.at("/topics_your_reels_topics").isEmpty()){
-                        content = content.at("/topics_your_reels_topics");
-                    }
-                    //read data from file
-                    BufferedReader br;
-                    List<String> result = new ArrayList<>();
-                    String json="";
-                    try {
-
-                        String line;
-                        InputStream is = currentFile.getInputStream();
-                        br = new BufferedReader(new InputStreamReader(is));
-                        while ((line = br.readLine()) != null) {
-                            result.add(line);
-                            json+=line;
-                        }
-                    } catch (IOException e) {
-                        System.err.println(e.getMessage());
-                    }
-                    LinkedList<String> stringList=new LinkedList<>();
-                    try {
-                        JSONObject object = new JSONObject(json);
-                        JSONArray array = object.getJSONArray("topics_your_topics");
-                        for (int k = 0; k < array.length(); k++) {
-                            String topic = array.getJSONObject(k).getJSONObject("string_map_data").getJSONObject("Name").getString("value");
-                            stringList.add(topic);
-                        }
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    //call data management controller for categorization
-                    SQLData sqlData = new SQLData();
-                    sqlData.setStringList(stringList);
-                    sqlData.setCompany("instagram");
-                    sqlData.setCredentials(userCredentials);
-                    dataManagement.ProfileInformation(sqlData);
                 }
             }
         }
@@ -174,3 +128,5 @@ public class Instagram {
         return new ResponseEntity<>(userCredentials, HttpStatus.OK);
     }
 }
+
+

@@ -2,6 +2,7 @@
 package dataInfoLogic.Controller.GraphQLController;
 
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
+import dataInfoLogic.DataTypes.Standort;
 import dataInfoLogic.Services.CredentialsManager;
 import dataInfoLogic.Services.FrontEndRequests;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
@@ -52,6 +53,26 @@ public class UserDataDBControllerGraphQL {
         }
 
         return frontEndRequests.getUserTopicsummarized(userId);
+    }
+
+    @GraphQLQuery(name = "UserCoordsAnalyzed")
+    public LinkedList<Standort> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
+
+        //validate credentials, return null if wrong credentials
+        if (userId != null && secret != null) {
+
+            UserCredentials userCredentials = new UserCredentials();
+            userCredentials.setUid(userId);
+            userCredentials.setSecret(secret);
+
+            //check if user credentials are correct if they are provided
+            if (!credentialsManager.checkPw(userCredentials)) {
+                return null;
+            }
+
+        }
+
+        return frontEndRequests.getUserCoordsSummarized(userId);
     }
 
 

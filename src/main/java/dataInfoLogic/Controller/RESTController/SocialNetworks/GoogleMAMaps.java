@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import dataInfoLogic.DataTypes.SQLData;
 import dataInfoLogic.DataTypes.Standort;
+import dataInfoLogic.Services.CoordinateManager;
 import dataInfoLogic.Services.CredentialsManager;
 import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
@@ -31,8 +32,12 @@ public class GoogleMAMaps {
     @Autowired
     CredentialsManager credentialsManager;
 
+    @Autowired
+    CoordinateManager coordinateManager;
+
+
     @CrossOrigin
-    @PostMapping(path = "/google/advertisement")
+    @PostMapping(path = "/data/google/advertisement")
     public ResponseEntity<?> submit(@RequestParam(value = "file1", required = false) MultipartFile file1,
                                     @RequestParam(value = "file2", required = false) MultipartFile file2,
                                     @RequestParam(value = "file3", required = false) MultipartFile file3,
@@ -88,8 +93,7 @@ public class GoogleMAMaps {
             //retrieve json content
             if (!(currentFile == null) && !currentFile.isEmpty()) {
 
-                //HashMap<Integer,Standort> Standorte = new HashMap<Integer,Standort>();
-                HashMap<Integer,HashMap<Integer,Standort>> Standorte = new HashMap<Integer,HashMap<Integer,Standort>>();
+                HashMap<Integer,HashMap<Integer,Standort>> standorte = new HashMap<Integer,HashMap<Integer,Standort>>();
 
                 int arraylen=0;
                 //retrieve json content
@@ -102,39 +106,62 @@ public class GoogleMAMaps {
                     try {
                         JSONObject object = new JSONObject(s);
                         JSONArray array = object.getJSONArray("locations");
-                        arraylen=array.length();
                         for (int k = 0; k < array.length(); k++) {
                             String latitudeE7 = array.getJSONObject(k).getString("latitudeE7");
                             String longitudeE7 = array.getJSONObject(k).getString("longitudeE7");
-
-                            //Standort ort=Standorte.get(Integer.parseInt(latitudeE7));
-                            //Standort ort=Standorte.get(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7));
-                            Standort ort = get(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7),Standorte);
+                            Standort ort = get(round(latitudeE7),round(longitudeE7),standorte);
                             if(ort!=null){
                                 ort.anzahl++;
                             }else{
-                                Standort standort=new Standort(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7));
-                                //Standorte.put(Integer.parseInt(latitudeE7),standort);
-                                put(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7),standort,Standorte);
+                                Standort standort=new Standort(round(latitudeE7),round(longitudeE7));
+                                put(round(latitudeE7),round(longitudeE7),standort,standorte);
                             }
 
                         }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+                    int k=0;
+                    for(HashMap<Integer,Standort> hmap:standorte.values()){
+                        k+=hmap.size();
+                    }
+                    LinkedList<Standort> list=new LinkedList<>();
+                    for(HashMap<Integer,Standort> hmap:standorte.values()){
+                        for(Standort standort: hmap.values()){
+                            list.add(standort);
+                        }
+                    }
+                    Collections.sort(list);
+                    List<Standort> list1000=list.subList(0,min(1000,list.size()));
+                    LinkedList<Standort> sumList=new LinkedList<>();
+                    int putin=0;
+                    for(Standort standort: list1000){
+                        for(Standort compare: sumList){
+                            if(compare(standort.latitude,compare.latitude) && compare(standort.longitude,compare.longitude)){
+                                compare.anzahl+=standort.anzahl;
+                                putin=1;
+                                break;
+                            }
+                        }
+                        if(putin==0){
+                            sumList.add(standort);
+                        }
+                        putin=0;
+                    }
 
-                    System.out.println(Standorte.size() +" "+ arraylen);
+                    for(int q=0;q<sumList.size();q++){
+                        Standort element=sumList.get(q);
+                        System.out.println(element.latitude + " " + element.longitude + " " + element.anzahl);
+                    }
+                    System.out.println(sumList.size());
+                    Collections.sort(sumList);
+                    List<Standort> list100=sumList.subList(0,min(100,sumList.size()));
 
-                    Standorte.entrySet().forEach(entry -> {
-                        entry.getValue().entrySet().forEach( x-> {
-                            System.out.println(entry.getKey()+" "+ x.getKey() +" "+ x.getValue().anzahl);
-                        });
-                    });
-                    System.out.println(Standorte.size() +" "+ arraylen);
-
+                    coordinateManager.storeCoordinates(list100,userCredentials,"google");
                 }
             }
         }
+
 
         return new ResponseEntity<>(userCredentials, HttpStatus.OK);
 
@@ -236,7 +263,17 @@ public class GoogleMAMaps {
             return map.get(key2);
         }
     }
-
-
-
+    public int round(String coord){
+        return Integer.parseInt(coord.substring(0,7));
+    }
+    public boolean compare(int a,int b){
+        if(a<b+20 && a>b-20){
+            return true;
+        }
+        return false;
+    }
+    public int min(int a,int b){
+        if(a>b)return b;
+        return a;
+    }
 }

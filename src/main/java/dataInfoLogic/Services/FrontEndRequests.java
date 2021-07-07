@@ -3,9 +3,14 @@ package dataInfoLogic.Services;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmountByCompany;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
+import dataInfoLogic.DataTypes.Standort;
 import dataInfoLogic.DataTypes.UserDataList;
+import dataInfoLogic.Entities.UserCoords;
 import dataInfoLogic.Entities.UserData;
+import dataInfoLogic.Repositories.UserCoordsRepository;
+import dataInfoLogic.Repositories.UserCredsRepository;
 import dataInfoLogic.Repositories.UserDataRepository;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +24,9 @@ public class FrontEndRequests {
 
     @Autowired
     UserDataRepository userDataRepository;
+
+    @Autowired
+    UserCoordsRepository userCoordsRepository;
 
     public LinkedList<TopicPercentage> getUserTopicsummarized(String userId){
         UserDataList userDataList=new UserDataList();
@@ -108,5 +116,17 @@ public class FrontEndRequests {
             }
         }
         return topicsPercentages;
+    }
+    public LinkedList<Standort> getUserCoordsSummarized(String userId){
+        LinkedList<UserCoords> userCoords=userCoordsRepository.getUserCoords(userId);
+        LinkedList<Standort> standorts=new LinkedList<>();
+        for(UserCoords userCoords1: userCoords){
+            Standort newStandort=new Standort(userCoords1.getLatitude(),userCoords1.getLongitude());
+            newStandort.anzahl=userCoords1.getCount();
+            newStandort.company=userCoords1.getCompany();
+            standorts.add(newStandort);
+
+        }
+        return standorts;
     }
 }

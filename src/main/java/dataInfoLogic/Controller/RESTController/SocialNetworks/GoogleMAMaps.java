@@ -1,34 +1,144 @@
 package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import dataInfoLogic.DataTypes.SQLData;
+import dataInfoLogic.DataTypes.Standort;
+import dataInfoLogic.Services.CredentialsManager;
 import dataInfoLogic.Services.DataManagement;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
+import org.antlr.v4.runtime.misc.DoubleKeyMap;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @RestController
 public class GoogleMAMaps {
     @Autowired
     DataManagement dataManagement;
 
+    @Autowired
+    CredentialsManager credentialsManager;
+
     @CrossOrigin
-    @PostMapping(path = "/google/MAMaps")
-    public ResponseEntity<?> submit(@RequestParam(value = "google") MultipartFile file, ModelMap modelMap,
+    @PostMapping(path = "/google/advertisement")
+    public ResponseEntity<?> submit(@RequestParam(value = "file1", required = false) MultipartFile file1,
+                                    @RequestParam(value = "file2", required = false) MultipartFile file2,
+                                    @RequestParam(value = "file3", required = false) MultipartFile file3,
+                                    @RequestParam(value = "file4", required = false) MultipartFile file4,
+                                    @RequestParam(value = "file5", required = false) MultipartFile file5,
                                     @RequestParam(value = "uid", required = false) String uid,
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
+
+        if(file1.getSize() == 0){
+            new ResponseEntity<>("No file attached", HttpStatus.BAD_REQUEST);
+        }
+
+        if(file1.isEmpty()){
+            new ResponseEntity<>("File empty", HttpStatus.BAD_REQUEST);
+        }
+
+        //check if user credentials are provided or assign new ones
+        UserCredentials userCredentials = new UserCredentials();
+        if (uid != null && secret != null) {
+            userCredentials.setUid(uid);
+            userCredentials.setSecret(secret);
+
+            //check if user credentials are correct if they are provided
+            if (!credentialsManager.checkPw(userCredentials)) {
+                return new ResponseEntity<>("Wrong user credentials", HttpStatus.BAD_REQUEST);
+            }
+
+        } else {
+            userCredentials=credentialsManager.randomUserCred();
+        }
+
+        //create helpers
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectReader objectReader = objectMapper.reader();
+
+        //loop to retrieve content from all files
+        for(int i = 0; i<5; i++){
+
+            MultipartFile currentFile;
+            if(i==0){
+                currentFile = file1;
+            }else if(i==2){
+                currentFile = file2;
+            }else if(i==3){
+                currentFile = file3;
+            }else if(i==4){
+                currentFile = file4;
+            }else{
+                currentFile = file5;
+            }
+
+            //retrieve json content
+            if (!(currentFile == null) && !currentFile.isEmpty()) {
+
+                //HashMap<Integer,Standort> Standorte = new HashMap<Integer,Standort>();
+                HashMap<Integer,HashMap<Integer,Standort>> Standorte = new HashMap<Integer,HashMap<Integer,Standort>>();
+
+                int arraylen=0;
+                //retrieve json content
+                if(Objects.equals(currentFile.getOriginalFilename(), "Standortverlauf.json")){
+                    InputStream initialStream= currentFile.getInputStream();
+                    byte[] buffer = new byte[initialStream.available()];
+                    initialStream.read(buffer);
+                    String s = new String(buffer,StandardCharsets.UTF_8);
+
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        JSONArray array = object.getJSONArray("locations");
+                        arraylen=array.length();
+                        for (int k = 0; k < array.length(); k++) {
+                            String latitudeE7 = array.getJSONObject(k).getString("latitudeE7");
+                            String longitudeE7 = array.getJSONObject(k).getString("longitudeE7");
+
+                            //Standort ort=Standorte.get(Integer.parseInt(latitudeE7));
+                            //Standort ort=Standorte.get(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7));
+                            Standort ort = get(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7),Standorte);
+                            if(ort!=null){
+                                ort.anzahl++;
+                            }else{
+                                Standort standort=new Standort(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7));
+                                //Standorte.put(Integer.parseInt(latitudeE7),standort);
+                                put(Integer.parseInt(latitudeE7),Integer.parseInt(longitudeE7),standort,Standorte);
+                            }
+
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    System.out.println(Standorte.size() +" "+ arraylen);
+
+                    Standorte.entrySet().forEach(entry -> {
+                        entry.getValue().entrySet().forEach( x-> {
+                            System.out.println(entry.getKey()+" "+ x.getKey() +" "+ x.getValue().anzahl);
+                        });
+                    });
+                    System.out.println(Standorte.size() +" "+ arraylen);
+
+                }
+            }
+        }
+
+        return new ResponseEntity<>(userCredentials, HttpStatus.OK);
+
+        /*
         modelMap.addAttribute("google", file);
 
         if (!file.isEmpty()) {
@@ -107,6 +217,26 @@ public class GoogleMAMaps {
             list.add(parts[1] + " to " + parts[2] + " on " + parts[3].split("MESZ")[0]);
             }
         return list;
+    */
     }
+    public void put(Integer key1, Integer key2, Standort value,HashMap<Integer,HashMap<Integer,Standort>> mMap) {
+        HashMap<Integer, Standort> map = mMap.get(key1);
+        if (map == null) {
+            map = new HashMap<Integer, Standort>();
+            mMap.put(key1, map);
+        }
+        map.put(key2, value);
+    }
+
+    public Standort get(Integer key1, Integer key2,HashMap<Integer,HashMap<Integer,Standort>> mMap) {
+        HashMap<Integer, Standort> map = mMap.get(key1);
+        if (map == null) {
+            return null;
+        } else {
+            return map.get(key2);
+        }
+    }
+
+
 
 }

@@ -1,6 +1,7 @@
 
 package dataInfoLogic.Controller.GraphQLController;
 
+import dataInfoLogic.DataTypes.Device;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.Location;
 import dataInfoLogic.Services.CredentialsManager;
@@ -68,6 +69,25 @@ public class UserDataDBControllerGraphQL {
         }
 
         return frontEndRequests.getUserCoordsSummarized(userId);
+    }
+    @GraphQLQuery(name = "UserDevicesAnalyzed")
+    public LinkedList<Device> getUserDevicesAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
+
+        //validate credentials, return null if wrong credentials
+        if (userId != null && secret != null) {
+
+            UserCredentials userCredentials = new UserCredentials();
+            userCredentials.setUid(userId);
+            userCredentials.setSecret(secret);
+
+            //check if user credentials are correct if they are provided
+            if (!credentialsManager.checkPw(userCredentials)) {
+                return null;
+            }
+
+        }
+
+        return frontEndRequests.getUserDevicesAnalyzed(userId);
     }
 
 

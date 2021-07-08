@@ -3,12 +3,16 @@ package dataInfoLogic.Services;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmountByCompany;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
+import dataInfoLogic.DataTypes.Device;
+import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
 import dataInfoLogic.DataTypes.Location;
 import dataInfoLogic.DataTypes.UserDataList;
 import dataInfoLogic.Entities.UserCoords;
 import dataInfoLogic.Entities.UserData;
+import dataInfoLogic.Entities.UserDevice;
 import dataInfoLogic.Repositories.UserCoordsRepository;
 import dataInfoLogic.Repositories.UserDataRepository;
+import dataInfoLogic.Repositories.UserDeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +26,9 @@ public class FrontEndRequests {
 
     @Autowired
     UserCoordsRepository userCoordsRepository;
+
+    @Autowired
+    UserDeviceRepository userDeviceRepository;
 
     public LinkedList<TopicPercentage> getUserTopicsummarized(String userId){
         UserDataList userDataList=new UserDataList();
@@ -123,5 +130,17 @@ public class FrontEndRequests {
 
         }
         return locations;
+    }
+    public LinkedList<Device> getUserDevicesAnalyzed(String userId){
+        LinkedList<UserDevice> userDevices=userDeviceRepository.getUserDevice(userId);
+        LinkedList<Device> userDevice=new LinkedList<>();
+        for(UserDevice userDevice1: userDevices){
+            Device device=new Device();
+            device.setCount(userDevice1.getCount());
+            device.setName(userDevice1.getPlatform());
+            device.setCompany(userDevice1.getCompany());
+            userDevice.add(device);
+        }
+        return userDevice;
     }
 }

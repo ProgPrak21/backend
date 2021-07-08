@@ -18,6 +18,6 @@ public interface UserDeviceRepository extends CrudRepository<UserDevice, Long> {
     void clearUserDevice(String userId);
 
     @Query(value="SELECT * FROM device_data WHERE user_id like ?1 ",nativeQuery = true)
-    LinkedList<UserCoords> getUserDevice(String userid);
+    LinkedList<UserDevice> getUserDevice(String userid);
 
 }

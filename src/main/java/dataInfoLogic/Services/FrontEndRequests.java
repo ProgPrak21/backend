@@ -140,7 +140,6 @@ public class FrontEndRequests {
                 }
                 //otherwise put the name of usercoords in there
                 else if(location.getName()==null && userCoords1.getName()!=null) {
-                    System.out.println(userCoords1.getName());
                     location.name = userCoords1.getName();
                     location.anzahl += userCoords1.getCount();
                 }
@@ -164,7 +163,7 @@ public class FrontEndRequests {
                 }
             }
         Collections.sort(locations);
-        List<Location> locationList=locations.subList(0,100);
+        List<Location> locationList=locations.subList(0,Math.min(100,locations.size()));
         return locationList;
     }
 

@@ -3,22 +3,32 @@ package dataInfoLogic.Services;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicAmountByCompany;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
+import dataInfoLogic.DataTypes.Device;
+import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
+import dataInfoLogic.DataTypes.Location;
 import dataInfoLogic.DataTypes.UserDataList;
+import dataInfoLogic.Entities.UserCoords;
 import dataInfoLogic.Entities.UserData;
+import dataInfoLogic.Entities.UserDevice;
+import dataInfoLogic.Repositories.UserCoordsRepository;
 import dataInfoLogic.Repositories.UserDataRepository;
-import org.apache.catalina.User;
+import dataInfoLogic.Repositories.UserDeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;
-import java.util.List;
 
 @Repository
 public class FrontEndRequests {
 
     @Autowired
     UserDataRepository userDataRepository;
+
+    @Autowired
+    UserCoordsRepository userCoordsRepository;
+
+    @Autowired
+    UserDeviceRepository userDeviceRepository;
 
     public LinkedList<TopicPercentage> getUserTopicsummarized(String userId){
         UserDataList userDataList=new UserDataList();
@@ -108,5 +118,28 @@ public class FrontEndRequests {
             }
         }
         return topicsPercentages;
+    }
+    public LinkedList<Location> getUserCoordsSummarized(String userId){
+        LinkedList<UserCoords> userCoords=userCoordsRepository.getUserCoords(userId);
+        LinkedList<Location> locations =new LinkedList<>();
+        for(UserCoords userCoords1: userCoords){
+            Location newLocation =new Location(userCoords1.getLatitude(),userCoords1.getLongitude());
+            newLocation.anzahl=userCoords1.getCount();
+            newLocation.company=userCoords1.getCompany();
+            locations.add(newLocation);
+        }
+        return locations;
+    }
+    public LinkedList<Device> getUserDevicesAnalyzed(String userId){
+        LinkedList<UserDevice> userDevices=userDeviceRepository.getUserDevice(userId);
+        LinkedList<Device> userDevice=new LinkedList<>();
+        for(UserDevice userDevice1: userDevices){
+            Device device=new Device();
+            device.setCount(userDevice1.getCount());
+            device.setName(userDevice1.getPlatform());
+            device.setCompany(userDevice1.getCompany());
+            userDevice.add(device);
+        }
+        return userDevice;
     }
 }

@@ -53,7 +53,7 @@ public class UserDataDBControllerGraphQL {
 
     @GraphQLQuery(name = "UserCoordsAnalyzed")
     public LinkedList<Location> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
-
+        System.out.println("bingo");
         //validate credentials, return null if wrong credentials
         if (userId != null && secret != null) {
 

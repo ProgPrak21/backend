@@ -18,4 +18,36 @@ public class Location implements Comparable<Location> {
         else
             return -1;
     }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setAnzahl(int anzahl) {
+        this.anzahl = anzahl;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
+
+    public int getAnzahl() {
+        return anzahl;
+    }
+
+    public String getCompany() {
+        return company;
+    }
 }

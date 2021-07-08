@@ -127,7 +127,6 @@ public class FrontEndRequests {
             newLocation.anzahl=userCoords1.getCount();
             newLocation.company=userCoords1.getCompany();
             locations.add(newLocation);
-
         }
         return locations;
     }

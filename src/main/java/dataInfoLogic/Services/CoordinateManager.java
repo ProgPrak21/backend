@@ -1,32 +1,28 @@
 package dataInfoLogic.Services;
 
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
-import dataInfoLogic.DataTypes.Standort;
+import dataInfoLogic.DataTypes.Location;
 import dataInfoLogic.Entities.UserCoords;
-import dataInfoLogic.Entities.UserCreds;
 import dataInfoLogic.Repositories.UserCoordsRepository;
-import dataInfoLogic.Repositories.UserCredsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 @Component
 public class CoordinateManager {
     @Autowired
     UserCoordsRepository userCoordsRepository;
     @Async
-    public void storeCoordinates(List<Standort> list,UserCredentials userCredentials,String company) {
+    public void storeCoordinates(List<Location> list, UserCredentials userCredentials) {
 
-        for(Standort standort: list){
+        for(Location location : list){
             UserCoords coords=new UserCoords();
-            coords.setCompany(company);
-            coords.setLatitude(standort.latitude);
-            coords.setLongitude(standort.longitude);
-            coords.setCount(standort.anzahl);
+            coords.setCompany(location.company);
+            coords.setLatitude(location.latitude);
+            coords.setLongitude(location.longitude);
+            coords.setCount(location.anzahl);
             coords.setUser_id(userCredentials.getUid());
             userCoordsRepository.save(coords);
         }

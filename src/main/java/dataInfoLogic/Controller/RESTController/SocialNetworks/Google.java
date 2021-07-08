@@ -1,16 +1,13 @@
 package dataInfoLogic.Controller.RESTController.SocialNetworks;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import dataInfoLogic.DataTypes.SQLData;
-import dataInfoLogic.DataTypes.Standort;
-import dataInfoLogic.Services.CoordinateManager;
+import dataInfoLogic.DataTypes.Device;
+import dataInfoLogic.DataTypes.Location;
+import dataInfoLogic.Services.CoordinateAnalyser;
 import dataInfoLogic.Services.CredentialsManager;
-import dataInfoLogic.Services.DataManagement;
-import dataInfoLogic.DataTypes.DataAnalysis.TopicAmount;
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
-import org.antlr.v4.runtime.misc.DoubleKeyMap;
+import dataInfoLogic.Services.DeviceAnalyser;
+import dataInfoLogic.Services.DeviceManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,15 +22,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @RestController
-public class GoogleMAMaps {
-    @Autowired
-    DataManagement dataManagement;
+public class Google {
 
     @Autowired
     CredentialsManager credentialsManager;
 
     @Autowired
-    CoordinateManager coordinateManager;
+    CoordinateAnalyser coordinateAnalyser;
+
+    @Autowired
+    DeviceAnalyser deviceAnalyser;
 
 
     @CrossOrigin
@@ -47,11 +45,11 @@ public class GoogleMAMaps {
                                     @RequestParam(value = "secret", required = false) String secret) throws IOException {
 
 
-        if(file1.getSize() == 0){
+        if (file1.getSize() == 0) {
             new ResponseEntity<>("No file attached", HttpStatus.BAD_REQUEST);
         }
 
-        if(file1.isEmpty()){
+        if (file1.isEmpty()) {
             new ResponseEntity<>("File empty", HttpStatus.BAD_REQUEST);
         }
 
@@ -67,97 +65,56 @@ public class GoogleMAMaps {
             }
 
         } else {
-            userCredentials=credentialsManager.randomUserCred();
+            userCredentials = credentialsManager.randomUserCred();
         }
 
         //create helpers
-        ObjectMapper objectMapper = new ObjectMapper();
-        ObjectReader objectReader = objectMapper.reader();
 
         //loop to retrieve content from all files
-        for(int i = 0; i<5; i++){
+        for (int i = 0; i < 5; i++) {
 
             MultipartFile currentFile;
-            if(i==0){
+            if (i == 0) {
                 currentFile = file1;
-            }else if(i==2){
+            } else if (i == 2) {
                 currentFile = file2;
-            }else if(i==3){
+            } else if (i == 3) {
                 currentFile = file3;
-            }else if(i==4){
+            } else if (i == 4) {
                 currentFile = file4;
-            }else{
+            } else {
                 currentFile = file5;
             }
 
             //retrieve json content
             if (!(currentFile == null) && !currentFile.isEmpty()) {
 
-                HashMap<Integer,HashMap<Integer,Standort>> standorte = new HashMap<Integer,HashMap<Integer,Standort>>();
 
-                int arraylen=0;
                 //retrieve json content
-                if(Objects.equals(currentFile.getOriginalFilename(), "Standortverlauf.json")){
-                    InputStream initialStream= currentFile.getInputStream();
+                if (Objects.equals(currentFile.getOriginalFilename(), "Standortverlauf.json")) {
+                    InputStream initialStream = currentFile.getInputStream();
                     byte[] buffer = new byte[initialStream.available()];
                     initialStream.read(buffer);
-                    String s = new String(buffer,StandardCharsets.UTF_8);
+                    String s = new String(buffer, StandardCharsets.UTF_8);
 
+                    //create double HashMap
+                    HashMap<Integer, HashMap<Integer, Location>> locationsHashMap = new HashMap<>();
+                    HashMap<String, Device> devicesHashMap = new HashMap<>();
                     try {
                         JSONObject object = new JSONObject(s);
                         JSONArray array = object.getJSONArray("locations");
-                        for (int k = 0; k < array.length(); k++) {
-                            String latitudeE7 = array.getJSONObject(k).getString("latitudeE7");
-                            String longitudeE7 = array.getJSONObject(k).getString("longitudeE7");
-                            Standort ort = get(round(latitudeE7),round(longitudeE7),standorte);
-                            if(ort!=null){
-                                ort.anzahl++;
-                            }else{
-                                Standort standort=new Standort(round(latitudeE7),round(longitudeE7));
-                                put(round(latitudeE7),round(longitudeE7),standort,standorte);
-                            }
 
-                        }
-                    }catch (Exception e){
+                        hashCoordinates(array, locationsHashMap);
+                        getDevices(array, devicesHashMap);
+
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    int k=0;
-                    for(HashMap<Integer,Standort> hmap:standorte.values()){
-                        k+=hmap.size();
-                    }
-                    LinkedList<Standort> list=new LinkedList<>();
-                    for(HashMap<Integer,Standort> hmap:standorte.values()){
-                        for(Standort standort: hmap.values()){
-                            list.add(standort);
-                        }
-                    }
-                    Collections.sort(list);
-                    List<Standort> list1000=list.subList(0,min(1000,list.size()));
-                    LinkedList<Standort> sumList=new LinkedList<>();
-                    int putin=0;
-                    for(Standort standort: list1000){
-                        for(Standort compare: sumList){
-                            if(compare(standort.latitude,compare.latitude) && compare(standort.longitude,compare.longitude)){
-                                compare.anzahl+=standort.anzahl;
-                                putin=1;
-                                break;
-                            }
-                        }
-                        if(putin==0){
-                            sumList.add(standort);
-                        }
-                        putin=0;
-                    }
+                    //give double HashMap and userCredentials to coordinateAnalyser
+                    coordinateAnalyser.storeCoordinates(locationsHashMap, userCredentials);
+                    deviceAnalyser.storeDevices(devicesHashMap, userCredentials);
 
-                    for(int q=0;q<sumList.size();q++){
-                        Standort element=sumList.get(q);
-                        System.out.println(element.latitude + " " + element.longitude + " " + element.anzahl);
-                    }
-                    System.out.println(sumList.size());
-                    Collections.sort(sumList);
-                    List<Standort> list100=sumList.subList(0,min(100,sumList.size()));
 
-                    coordinateManager.storeCoordinates(list100,userCredentials,"google");
                 }
             }
         }
@@ -246,34 +203,61 @@ public class GoogleMAMaps {
         return list;
     */
     }
-    public void put(Integer key1, Integer key2, Standort value,HashMap<Integer,HashMap<Integer,Standort>> mMap) {
-        HashMap<Integer, Standort> map = mMap.get(key1);
+
+    public void put(Integer key1, Integer key2, Location value, HashMap<Integer, HashMap<Integer, Location>> mMap) {
+        HashMap<Integer, Location> map = mMap.get(key1);
         if (map == null) {
-            map = new HashMap<Integer, Standort>();
+            map = new HashMap<>();
             mMap.put(key1, map);
         }
         map.put(key2, value);
     }
 
-    public Standort get(Integer key1, Integer key2,HashMap<Integer,HashMap<Integer,Standort>> mMap) {
-        HashMap<Integer, Standort> map = mMap.get(key1);
+    public Location get(Integer key1, Integer key2, HashMap<Integer, HashMap<Integer, Location>> mMap) {
+        HashMap<Integer, Location> map = mMap.get(key1);
         if (map == null) {
             return null;
         } else {
             return map.get(key2);
         }
     }
-    public int round(String coord){
-        return Integer.parseInt(coord.substring(0,7));
+
+    public int round(String coord) {
+        return Integer.parseInt(coord.substring(0, 7));
     }
-    public boolean compare(int a,int b){
-        if(a<b+20 && a>b-20){
-            return true;
+
+    public void hashCoordinates(JSONArray array, HashMap<Integer, HashMap<Integer, Location>> locationsHashMap) throws Exception {
+        for (int k = 0; k < array.length(); k++) {
+            String latitudeE7 = array.getJSONObject(k).getString("latitudeE7");
+            String longitudeE7 = array.getJSONObject(k).getString("longitudeE7");
+            Location ort = get(round(latitudeE7), round(longitudeE7), locationsHashMap);
+            if (ort != null) {
+                ort.anzahl++;
+            } else {
+                Location location = new Location(round(latitudeE7), round(longitudeE7));
+                location.company = "google";
+                put(round(latitudeE7), round(longitudeE7), location, locationsHashMap);
+            }
         }
-        return false;
     }
-    public int min(int a,int b){
-        if(a>b)return b;
-        return a;
+
+    public void getDevices(JSONArray array, HashMap<String, Device> devicesHashMap) throws Exception {
+        for (int k = 0; k < array.length(); k++) {
+            if (array.getJSONObject(k).has("platform")) {
+                String platform = array.getJSONObject(k).getString("platform");
+                String[] platformParts = platform.split("/");
+                String deviceName = platformParts[1] + " " + platformParts[2];
+                if (devicesHashMap.get(deviceName) == null) {
+                    Device device = new Device();
+                    device.setCount(1);
+                    device.setName(deviceName);
+                    device.setCompany("google");
+                    devicesHashMap.put(deviceName, device);
+                } else {
+                    devicesHashMap.get(deviceName).setCount(devicesHashMap.get(deviceName).getCount() + 1);
+                }
+
+            }
+        }
     }
 }

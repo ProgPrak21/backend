@@ -2,24 +2,19 @@
 package dataInfoLogic.Controller.GraphQLController;
 
 import dataInfoLogic.DataTypes.FrontendDTO.UserCredentials;
-import dataInfoLogic.DataTypes.Standort;
+import dataInfoLogic.DataTypes.Location;
 import dataInfoLogic.Services.CredentialsManager;
 import dataInfoLogic.Services.FrontEndRequests;
 import dataInfoLogic.DataTypes.DataAnalysis.TopicPercentage;
-import dataInfoLogic.Entities.UserData;
-import dataInfoLogic.Repositories.UserDataRepository;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 import java.util.LinkedList;
-import java.util.List;
 
 @CrossOrigin
 @Service
@@ -56,7 +51,7 @@ public class UserDataDBControllerGraphQL {
     }
 
     @GraphQLQuery(name = "UserCoordsAnalyzed")
-    public LinkedList<Standort> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
+    public LinkedList<Location> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
 
         //validate credentials, return null if wrong credentials
         if (userId != null && secret != null) {

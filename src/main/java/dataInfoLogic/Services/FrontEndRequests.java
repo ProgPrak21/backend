@@ -126,7 +126,6 @@ public class FrontEndRequests {
 
     public List<Location> getUserCoordsSummarized(String userId) {
         LinkedList<UserCoords> userCoords = userCoordsRepository.getUserCoords(userId);
-        System.out.println(userCoords.size());
         LinkedList<Location> locations = new LinkedList<>();
         HashMap<Integer, HashMap<Integer, HashMap<String,Location>>> locationsHashMap = new HashMap<>();
         //For all userCoords in database:
@@ -136,7 +135,6 @@ public class FrontEndRequests {
             //if yes:
             if (location != null) {
                 //if the entry in hashtable already got a name
-                System.out.println("NAME : " + userCoords1.getName());
                 if (location.getName() != null && userCoords1.getName()!=null) {
                     location.anzahl+=userCoords1.getCount();
                 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 import java.util.LinkedList;
+import java.util.List;
 
 @CrossOrigin
 @Service
@@ -52,8 +53,7 @@ public class UserDataDBControllerGraphQL {
     }
 
     @GraphQLQuery(name = "UserCoordsAnalyzed")
-    public LinkedList<Location> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
-        System.out.println("bingo");
+    public List<Location> getUserCoordsAnalyzed(@GraphQLArgument(name = "userId") String userId, @GraphQLArgument(name = "secret") String secret) {
         //validate credentials, return null if wrong credentials
         if (userId != null && secret != null) {
 

@@ -115,6 +115,28 @@ public class Google {
                     deviceAnalyser.storeDevices(devicesHashMap, userCredentials);
 
 
+                }else if(currentFile.getOriginalFilename().matches("2(.*)_(.*).json")){
+                    InputStream initialStream = currentFile.getInputStream();
+                    byte[] buffer = new byte[initialStream.available()];
+                    initialStream.read(buffer);
+                    String s = new String(buffer, StandardCharsets.UTF_8);
+
+                    //create double HashMap
+                    HashMap<Integer, HashMap<Integer, Location>> locationsHashMap = new HashMap<>();
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        if(object.has("timelineObjects")) {
+
+                            JSONArray array = object.getJSONArray("timelineObjects");
+
+                            hashCoordinatesYear(array, locationsHashMap);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //give double HashMap and userCredentials to coordinateAnalyser
+                    coordinateAnalyser.storeCoordinates(locationsHashMap, userCredentials);
                 }
             }
         }
@@ -257,6 +279,35 @@ public class Google {
                     devicesHashMap.get(deviceName).setCount(devicesHashMap.get(deviceName).getCount() + 1);
                 }
 
+            }
+        }
+    }
+    public void hashCoordinatesYear(JSONArray array, HashMap<Integer, HashMap<Integer, Location>> locationsHashMap) throws Exception {
+        for (int k = 0; k < array.length(); k++) {
+            if(array.getJSONObject(k).has("placeVisit")) {
+                if (array.getJSONObject(k).getJSONObject("placeVisit").has("location")) {
+                    if (array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").has("latitudeE7") &&
+                            array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").has("longitudeE7") &&
+                            array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").has("name")
+                    ) {
+
+                        String latitudeE7 = array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").getString("latitudeE7");
+                        String longitudeE7 = array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").getString("longitudeE7");
+                        String name=array.getJSONObject(k).getJSONObject("placeVisit").getJSONObject("location").getString("name");
+                        Location ort = get(round(latitudeE7), round(longitudeE7), locationsHashMap);
+                        if (ort != null) {
+                            ort.anzahl++;
+                            if(ort.getName()==null){
+                                ort.name=name;
+                            }
+                        } else {
+                            Location location = new Location(round(latitudeE7), round(longitudeE7));
+                            location.company = "google";
+                            location.name=name;
+                            put(round(latitudeE7), round(longitudeE7), location, locationsHashMap);
+                        }
+                    }
+                }
             }
         }
     }

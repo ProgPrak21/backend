@@ -14,6 +14,7 @@ public class UserCoords {
     private int latitude;
     private int longitude;
     private int count;
+    private String name;
 
     public void setCount(int count) {
         this.count = count;
@@ -57,5 +58,13 @@ public class UserCoords {
 
     public String getCompany() {
         return company;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

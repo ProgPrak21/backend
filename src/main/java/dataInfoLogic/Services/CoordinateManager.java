@@ -23,6 +23,7 @@ public class CoordinateManager {
             coords.setLatitude(location.latitude);
             coords.setLongitude(location.longitude);
             coords.setCount(location.anzahl);
+            coords.setName(location.name);
             coords.setUser_id(userCredentials.getUid());
             userCoordsRepository.save(coords);
         }

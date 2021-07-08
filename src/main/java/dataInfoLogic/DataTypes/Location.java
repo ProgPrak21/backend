@@ -5,6 +5,7 @@ public class Location implements Comparable<Location> {
     public int longitude;
     public int anzahl=0;
     public String company;
+    public String name;
 
     public Location(int latitude, int longitude) {
         this.latitude = latitude;
@@ -49,5 +50,9 @@ public class Location implements Comparable<Location> {
 
     public String getCompany() {
         return company;
+    }
+
+    public String getName() {
+        return name;
     }
 }

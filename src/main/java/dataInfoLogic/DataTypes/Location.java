@@ -3,7 +3,7 @@ package dataInfoLogic.DataTypes;
 public class Location implements Comparable<Location> {
     public int latitude;
     public int longitude;
-    public int anzahl=0;
+    public int anzahl=1;
     public String company;
     public String name;
 

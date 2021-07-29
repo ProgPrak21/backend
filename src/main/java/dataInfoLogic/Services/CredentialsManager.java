@@ -16,6 +16,9 @@ public class CredentialsManager {
 
     public boolean checkPw(UserCredentials userCredentials) {
         if(userCredentials.getUid().isEmpty())return false;
+        if(userCredentials.getUid().contains(" ") || userCredentials.getUid().contains(";") || userCredentials.getUid().contains("=")){
+            return false;
+        }
         LinkedList<UserCreds> userCredList= userCredsRepository.getUserCreds(userCredentials.getUid());
         Encryptor encryptor=new Encryptor();
         if(userCredList.isEmpty())return false;

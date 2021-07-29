@@ -1,9 +1,0 @@
-<changelist name="Uncommitted_changes_before_Update_at_08_07_2021_16_10_[Default_Changelist]" date="1625753444761" recycled="true" deleted="true">
-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_07_2021_16_10_[Default_Changelist]/shelved.patch" />
-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 08.07.2021 16:10 [Default Changelist]" />
-  <binary>
-    <option name="BEFORE_PATH" value="target/classes/dataInfoLogic/Services/FrontEndRequests.class" />
-    <option name="AFTER_PATH" value="target/classes/dataInfoLogic/Services/FrontEndRequests.class" />
-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_07_2021_16_10_[Default_Changelist]/FrontEndRequests.class" />
-  </binary>
-</changelist>

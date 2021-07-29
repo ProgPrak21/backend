@@ -143,6 +143,9 @@ public class FrontEndRequests {
                     location.name = userCoords1.getName();
                     location.anzahl += userCoords1.getCount();
                 }
+                else if(location.getName()==null && userCoords1.getName()==null){
+                    location.anzahl+=userCoords1.getCount();
+                }
             //if not:
             }else{
                 //Put it into the hashtable

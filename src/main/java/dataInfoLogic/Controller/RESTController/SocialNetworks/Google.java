@@ -245,7 +245,7 @@ public class Google {
     }
 
     public int round(String coord) {
-        return Integer.parseInt(coord.substring(0, 7));
+        return Integer.parseInt(coord.substring(0, coord.length()-2));
     }
 
     public void hashCoordinates(JSONArray array, HashMap<Integer, HashMap<Integer, Location>> locationsHashMap) throws Exception {
